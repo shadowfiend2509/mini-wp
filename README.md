@@ -1,1 +1,1 @@
-# mini-wp
+Mini-Wp
