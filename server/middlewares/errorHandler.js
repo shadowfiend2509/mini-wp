@@ -32,6 +32,10 @@ module.exports = (err, req, res, next) => {
     res.status(403).json({msg: 'Cant check yourSelf'})
   } else if(err.msg == 'zeroAccept') {
     res.status(404).json({msg: 'Target Not Found!'})
+  } else if(err.msg == 'codee') {
+    res.status(403).json({msg: 'Wrong code / exp Code Verify Check your Email or request again'})
+  } else if(err.msg == 'expV') {
+    res.status(400).json({msg: 'Exp Verify try again'})
   }
   else if(err.errmsg = new RegExp('duplicate', 'i')) {
     res.status(403).json({msg: 'The Email allready used!'})

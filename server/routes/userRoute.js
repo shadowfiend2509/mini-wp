@@ -2,16 +2,24 @@ const Route = require('express').Router();
 const userCont = require('../controllers/userController');
 const { authentication, checkForAccept } = require('../middlewares/auth');
 
-Route.get('/', userCont.findAllUser);
-Route.get('/:id', userCont.getProfileUser);
 Route.post('/signup', userCont.signup);
 Route.post('/signin', userCont.signin);
 
-Route.get('/status/:id', authentication, userCont.checkPrivate);
-Route.patch('/status/public/:id', authentication, userCont.followingStatusFalse);
-Route.patch('/status/private/:id', authentication, userCont.followingStatusTrue);
+Route.get('/confirm/verify', userCont.resetPasswordVerify);
+Route.patch('/confirm', userCont.confirmVerify);
+Route.patch('/changepass', userCont.changePassword);
 
-Route.patch('/status/accept/:id', authentication, checkForAccept, userCont.acceptRequest);
-Route.patch('/status/decline/:id', authentication, checkForAccept, userCont.declineRequest);
+Route.use(authentication)
+
+Route.get('/', userCont.findAllUser);
+Route.get('/:id', userCont.getProfileUser);
+
+Route.get('/status/:id', userCont.checkPrivate);
+Route.patch('/status/public/:id', userCont.followingStatusFalse);
+Route.patch('/status/private/:id', userCont.followingStatusTrue);
+
+Route.patch('/status/accept/:id', checkForAccept, userCont.acceptRequest);
+Route.patch('/status/decline/:id', checkForAccept, userCont.declineRequest);
+
 
 module.exports = Route;

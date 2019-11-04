@@ -1,7 +1,11 @@
 const User = require('../models/user');
-const { comparePassword } = require('../helpers/hash');
+const { comparePassword, hashPassword } = require('../helpers/hash');
 const { signToken } = require('../helpers/jwt');
+const { createVerify, checkVerify } = require('../helpers/logicVerify');
+const { sendMail } = require('../helpers/sendMail');
 const mongoose = require('mongoose');
+var email = '';
+var statusPass = false;
 
 module.exports = {
   findAllUser (req, res, next) {
@@ -170,5 +174,49 @@ module.exports = {
         res.status(200).json({msg: 'Decline the Request'})
       })
       .catch(next)
+  },
+  resetPasswordVerify (req, res, next) {
+    email = req.body.email
+    User.findOne({ email })
+      .then(user => {
+        const sendVerify = createVerify(user._id)
+        return sendMail(email, {
+          msg: `your verify code is => ${sendVerify}`
+        }, {
+          subject: `Reset Password Verify`
+        })
+      })
+      .then(({msg}) => {
+        res.status(200).json({ msg })
+      })
+      .catch(next)
+  },
+  confirmVerify (req, res, next) {
+    const verify = req.body.verify
+    User.findOne({ email })
+      .then(user => {
+        let pass = false;
+        if(user && checkVerify(user._id.toString(), verify)) {
+          pass = true;
+        }
+        console.log(pass)
+        if(!pass) throw {msg: 'codee'}
+        else {
+          statusPass = true;
+          res.status(200).json({ status: true })
+        }
+      })
+      .catch(next)
+  },
+  changePassword (req, res, next) {
+    const newPass = req.body.newpass;
+    if(!statusPass) throw {msg: 'expV'}
+    else {
+      User.findOneAndUpdate({ email }, { password: hashPassword(newPass) })
+        .then(user => {
+          res.status(200).json({msg: 'success update', user})
+        })
+        .catch(next)
+    }
   }
 }
