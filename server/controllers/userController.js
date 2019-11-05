@@ -4,14 +4,20 @@ const { signToken } = require('../helpers/jwt');
 const { createVerify, checkVerify } = require('../helpers/logicVerify');
 const { sendMail } = require('../helpers/sendMail');
 const mongoose = require('mongoose');
-var email = '';
-var statusPass = false;
 
 module.exports = {
   findAllUser (req, res, next) {
     User.find()
       .then(users => {
         res.status(200).json(users);
+      })
+      .catch(next)
+  },
+  getLoginProfile (req, res, next) {
+    const _id = req.loggedUser.id;
+    User.findById({ _id }).populate('Following').populate('Followers').populate('RequestIn').populate('RequestOut')
+      .then(user => {
+        res.status(200).json(user)
       })
       .catch(next)
   },
@@ -24,8 +30,8 @@ module.exports = {
       .catch(next)
   },
   signup (req, res, next) {
-    const {username, password, email, status} = req.body;
-    User.create({username, password, email, status})
+    const {username, password, email} = req.body;
+    User.create({username, password, email})
       .then(user => {
         const payload = {
           id: user._id,
@@ -176,7 +182,7 @@ module.exports = {
       .catch(next)
   },
   resetPasswordVerify (req, res, next) {
-    email = req.body.email
+    const email = req.body.email
     User.findOne({ email })
       .then(user => {
         const sendVerify = createVerify(user._id)
@@ -192,6 +198,7 @@ module.exports = {
       .catch(next)
   },
   confirmVerify (req, res, next) {
+    const email = req.body.email
     const verify = req.body.verify
     User.findOne({ email })
       .then(user => {
@@ -199,7 +206,6 @@ module.exports = {
         if(user && checkVerify(user._id.toString(), verify)) {
           pass = true;
         }
-        console.log(pass)
         if(!pass) throw {msg: 'codee'}
         else {
           statusPass = true;
@@ -209,14 +215,12 @@ module.exports = {
       .catch(next)
   },
   changePassword (req, res, next) {
+    const email = req.body.email;
     const newPass = req.body.newpass;
-    if(!statusPass) throw {msg: 'expV'}
-    else {
-      User.findOneAndUpdate({ email }, { password: hashPassword(newPass) })
-        .then(user => {
-          res.status(200).json({msg: 'success update', user})
-        })
-        .catch(next)
-    }
+    User.findOneAndUpdate({ email }, { password: hashPassword(newPass) })
+      .then(user => {
+        res.status(200).json({msg: 'your password success updated!', user})
+      })
+      .catch(next)
   }
 }

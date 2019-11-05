@@ -1,7 +1,8 @@
 <template>
 <div id='homePagee'>
   <div>
-    <HomeNavBar />
+    <HomeNavBar 
+      />
   </div>
   <b-container>
     <div class="homePage">
@@ -21,7 +22,7 @@
           <button class='btn btn-outline-info' id="btn-4" @click='sendPage("signin")'>
               SIGN IN
           </button>
-          <button class='btn btn-outline-info signup' id="btn-4">
+          <button class='btn btn-outline-info signup' id="btn-4" @click='sendPage("signup")'>
               SIGN UP
           </button>
         </div>
@@ -36,8 +37,14 @@
 
 <script>
 import HomeNavBar from './homeNavBar'
+import swal from 'sweetalert2'
 
 export default {
+  data () {
+    return {
+      statusNav: ''
+    }
+  },
   components: {
     HomeNavBar
   },
@@ -68,13 +75,11 @@ img{
   justify-content: center;
 }
 
-.btn{
-  width: 250px;
-  height: 120px
-}
 #btn-4 {
   font-size: 25px;
   color: gold;
+  width: 250px;
+  height: 120px;
 }
 #btn-4::after{
    content: '\00bb';
@@ -84,7 +89,7 @@ img{
 }
 
 #btn-4:hover{
-  border-radius: .65rem;
+  border-radius: .80rem;
   padding-right: 1.25rem;
   color: white;
   font-weight: bold

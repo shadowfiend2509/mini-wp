@@ -5,13 +5,14 @@ const { authentication, checkForAccept } = require('../middlewares/auth');
 Route.post('/signup', userCont.signup);
 Route.post('/signin', userCont.signin);
 
-Route.get('/confirm/verify', userCont.resetPasswordVerify);
+Route.post('/confirm/verify', userCont.resetPasswordVerify);
 Route.patch('/confirm', userCont.confirmVerify);
 Route.patch('/changepass', userCont.changePassword);
 
 Route.use(authentication)
 
 Route.get('/', userCont.findAllUser);
+Route.get('/find/login', userCont.getLoginProfile);
 Route.get('/:id', userCont.getProfileUser);
 
 Route.get('/status/:id', userCont.checkPrivate);

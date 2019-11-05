@@ -4,8 +4,8 @@
     <div class="dcpress">
       <h2 id="idText">DcWordPress</h2>
     </div>
-    <div class='backHome'>
-      <button class='btn btn-outline-info btn-sm'><h2>Back</h2></button>
+    <div class='backHome' v-if='getStatus'>
+      <button class='btn btn-outline-info btn-sm'><h2>Features</h2></button>
     </div>
   </b-navbar>
   </div>
@@ -13,7 +13,14 @@
 
 <script>
 export default {
-
+  data () {
+    return {
+      getStatus: ''
+    }
+  },
+  created() {
+    this.getStatus = 'signin'
+  }
 }
 </script>
 
@@ -24,7 +31,7 @@ export default {
 }
 button{
   height: 50px;
-  width: 125px
+  width: 150px
 }
 .backHome {
   margin-right: 20px
@@ -36,7 +43,7 @@ button{
   width: 35px;
 }
 #idText{
-  font-family: 'Gloria Hallelujah', cursive;
+  font-family: 'Yeon Sung', cursive;
   font-size: 50px;
 }
 .dcpress{

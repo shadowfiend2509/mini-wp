@@ -15,13 +15,13 @@ module.exports = (err, req, res, next) => {
   } else if(err.errors && err.errors.featured_image) {
     res.status(400).json({msg: err.errors.featured_image.message})
   } else if(err.msg == 'authen') {
-    res.status(401).json({msg: 'Authentication Error'});
+    res.status(403).json({msg: 'Authentication Error'});
   } else if(err.msg == 'author') {
-    res.status(402).json({msg: 'Authorization Error!'});
+    res.status(401).json({msg: 'Authorization Error!'});
   } else if(err.msg == 'empty') {
     res.status(400).json({msg: 'cannot Update with empty value'})
   } else if(err.port == 443) {
-    res.status(400).json({msg: 'Article need Image / something wrong with GCS'})
+    res.status(400).json({msg: 'Article need Image / Problem with GCS'})
   } else if(err.kind == 'ObjectId') {
     res.status(404).json({msg: 'The searched id was not found'})
   } else if(err.name == 'JsonWebTokenError') {
@@ -35,7 +35,9 @@ module.exports = (err, req, res, next) => {
   } else if(err.msg == 'codee') {
     res.status(403).json({msg: 'Wrong code / exp Code Verify Check your Email or request again'})
   } else if(err.msg == 'expV') {
-    res.status(400).json({msg: 'Exp Verify try again'})
+    res.status(400).json({msg: 'Exp Verify please try again'})
+  } else if(err.msg == 'none') {
+    res.status(404).json({msg: 'Email not registered!'})
   }
   else if(err.errmsg = new RegExp('duplicate', 'i')) {
     res.status(403).json({msg: 'The Email allready used!'})
