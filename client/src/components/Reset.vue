@@ -7,7 +7,7 @@
       <div class="reset">
         <div class="reset-triangle"></div>
 
-        <h2 class="reset-header">Reset Your Password</h2>
+        <h2 class="reset-header">Reset Password</h2>
 
         <div class="reset-container">
           <p><input type="email" v-model='resemail' placeholder="input your email" :disabled='disable' :style='color'></p>

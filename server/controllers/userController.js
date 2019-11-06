@@ -61,6 +61,28 @@ module.exports = {
       })
       .catch(next)
   },
+  changeStatus (req, res, next) {
+    User.findById({ _id: req.loggedUser.id })
+      .then(user => {
+        if(user.status) {
+          return User.findByIdAndUpdate({ _id: req.loggedUser.id }, { status: false })
+        } else {
+          return User.findByIdAndUpdate({ _id: req.loggedUser.id }, { status: true })
+        }
+      })
+      .then(() => {
+        res.status(200).json({msg: 'success'})
+      })
+      .catch(next)
+  },
+  updateImage (req, res, next) {
+    const url = req.file.cloudStoragePublicUrl;
+    User.findByIdAndUpdate({ _id: req.loggedUser.id }, {image: url})
+      .then(user => {
+        res.status(200).json({user})
+      })
+      .catch(next)
+  },
   checkPrivate (req, res, next) {
     const _id = req.params.id;
     User.findById({ _id })

@@ -14,12 +14,15 @@
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.4",
+    "mdbvue": "^6.0.0",
     "node-sass": "^4.13.0",
     "sweetalert2": "^8.19.0",
     "vue": "^2.6.10",
     "vue-hot-reload-api": "^2.3.4",
     "vue-icon": "^2.1.1",
-    "vue-slide-toggle": "^1.1.1"
+    "vue-slide-toggle": "^1.1.1",
+    "vue-spinner": "^1.0.3",
+    "vue-tinymce-editor": "^1.6.2"
   },
   "devDependencies": {
     "@vue/component-compiler-utils": "^3.0.0",

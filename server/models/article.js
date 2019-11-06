@@ -18,7 +18,7 @@ const ArticleSchema = new Schema({
     type: String,
     required: [true, 'The article need Image!']
   },
-  Tags: [],
+  tags: [],
   Likes: [
     {
       type: Schema.Types.ObjectId,

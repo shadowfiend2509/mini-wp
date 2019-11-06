@@ -1,11 +1,18 @@
 const Article = require('../models/article');
 const User = require('../models/user');
-const mongoose = require('mongoose');
+
 
 module.exports = {
+  getPublicArticle (req, res, next) {
+    Article.find().populate("Author").sort([['createdAt', 'descending']])
+      .then(articles => {
+        res.status(200).json(articles)
+      })
+      .catch(next)
+  },
   getAuthorArticle (req, res, next) {
     const Author = req.loggedUser.id;
-    Article.find({ Author })
+    Article.find({ Author }).sort([['createdAt', 'descending']])
       .then(articles => {
         res.status(200).json(articles);
       })
@@ -29,11 +36,10 @@ module.exports = {
   },
   updateArticle (req, res, next) {
     const _id = req.params.id;
-    const url = req.file.cloudStoragePublicUrl;
     const { title, content } = req.body;
     if(!title, !content) throw {msg: 'empty'} 
     else {
-      Article.findByIdAndUpdate({ _id }, { title, content, featured_image: url })  
+      Article.findByIdAndUpdate({ _id }, { title, content })  
         .then(() => {
           res.status(201).json({msg: 'success updated'})
         })
@@ -62,10 +68,12 @@ module.exports = {
       .catch(next)
   },
   createArticle (req, res, next) {
+    const newtags = req.body.tags;
+    const tags = newtags.split(',')
     const { title, content } = req.body;
     const url = req.file.cloudStoragePublicUrl;
     const Author = req.loggedUser.id;
-    Article.create({ title, content, featured_image: url, Author })
+    Article.create({ title, content, tags, featured_image: url, Author })
       .then(article => {
         res.status(201).json({msg: 'created!', article})
       })
@@ -85,6 +93,25 @@ module.exports = {
     Article.findByIdAndUpdate(id, {$push: {Tags: tag}})
       .then(() => {
         res.status(200).json({msg: 'added Tags'});
+      })
+      .catch(next)
+  },
+  findByTag (req, res, next) {
+    const tag = req.params.tag;
+    Article.find().populate('Author').sort([['createdAt', 'descending']])
+      .then(articles => {
+
+        let temp = [];
+        articles.forEach((el, i) => {
+          console.log(el.tags)
+          for(let i=0; i<el.tags.length; i++) {
+            if(el.tags[i] == tag) {
+              temp.push(el)
+            }
+          }
+        })
+        console.log(temp)
+        res.status(200).json({article: temp})
       })
       .catch(next)
   }

@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="homeFoot">
-        <img src="https://storage.googleapis.com/newminiwp/1572853706671wordpress-wallpaper.png" alt="img">
+        <img src="https://storage.cloud.google.com/newminiwp/wordpress-wallpaper.png?authuser=1&folder&organizationId" alt="img">
       </div>
     </div>
   </b-container>

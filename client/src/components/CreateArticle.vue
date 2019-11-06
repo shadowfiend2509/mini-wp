@@ -2,10 +2,12 @@
   <div id='makeArticles'>
     <nav id='navcreate' class='border'>
       <div class="mainCreate">
-        <h2 id="idText" @click="sendPage('mainBody')">DcWordPress</h2>
+        <h2 id="idText" @click="sendPage('mainPage')">DcWordPress</h2>
       </div>
       <div class="butCreate">
-        <button type="button" class="btn btn-outline-light btn-lg site-btns btnPub" @click='sendPage("makeArticle")'><v-icon class='ihome' name='upload-cloud'></v-icon> &nbsp; Publish</button>
+        <form @submit.prevent='publishArticle' enctype="multipart/form-data">
+          <input type="submit" value='Publish' class="btn btn-outline-light btn-lg site-btns btnPub">
+        </form>
       </div>
     </nav>
     <div class='body-container border'>
@@ -21,20 +23,57 @@
             </div>
           </div>
           <div id="content">
-            <tinymce-editor api-key="c3wnyw28t1iji4r87vosh9lp2l4vegqf78rxgkh9xvb1avky" :init="{plugins: 'wordcount'}"></tinymce-editor>
+            <tinymce id="d1" 
+              :other_options="tinyOptions" 
+              v-model="Content"
+            ></tinymce>
           </div>
         </div>
 
       </div>
-      <div class="col-3 border">
-          <b-form-group label="Using options array:">
-            <b-form-checkbox-group
-              id="checkbox-group-1"
-              v-model="selected"
-              :options="options"
-              name="flavour-1"
-            ></b-form-checkbox-group>
-          </b-form-group>
+      <div class="col-3 rightMenu">
+
+                <ul class="menu-need-hover" v-b-toggle.collapse-a.collapse-b>
+                    <v-icon class='ipor' name='award'></v-icon> &nbsp; <a id='portFolio'>Add Tags</a>
+
+                    <!-- Elements to collapse -->
+                </ul>
+                <div id="colaps">
+                  <b-collapse id="collapse-a" class="mt-2">
+                      <b-form-checkbox-group
+                        v-model="selected"
+                        :options="options"
+                        name="flavour-2a"
+                        id='checkboxgroup'
+                      ></b-form-checkbox-group>
+                  </b-collapse>
+                  <b-collapse id="collapse-b" class="mt-2">
+                    <form @submit.prevent='addTag'>
+                      <b-card class='portIn'><input type='text' v-model='newtag' id='inputTag' placeholder="Add Tag" style='text-align: center'> &nbsp; <input type="submit" value='add' class='btn-outline-dark btn'></b-card>
+                    </form>                
+                  </b-collapse>
+                </div>
+                <ul class="menu-need-hover" v-b-toggle.collapse-c.collapse-d>
+                    <v-icon class='ipor' name='image'></v-icon> &nbsp; <a id='portFolio'>Featured Image</a>
+
+                    <!-- Elements to collapse -->
+                </ul>
+
+                <div id="colaps">
+                  <b-collapse id="collapse-c" class="mt-2">
+                    <b-card class='portIn'>
+                      <b-form-file
+                        ref="file"
+                        type="file"
+                        name='file'
+                        v-model="file"
+                        :state="Boolean(file)"
+                        placeholder="Choose a file or drop it here..."
+                        drop-placeholder="Drop file here..."
+                      ></b-form-file>
+                    </b-card>
+                  </b-collapse>
+                </div>
       </div>
     </div>
 
@@ -49,33 +88,100 @@
 </template>
 
 <script>
-
 import Editor from '@tinymce/tinymce-vue';
+import axios from 'axios'
+import swal from 'sweetalert2'
 
 export default {
   data() {
     return {
-        selected: [], // Must be an array reference!
-        options: [
-          { text: 'Sport', value: 'sport' },
-          { text: 'Politic', value: 'politic' },
-          { text: 'Games', value: 'games' },
-          { text: 'Music', value: 'music' }
-        ]
+      selected: [], // Must be an array reference!
+      file: null,
+      Content: null,
+      title: null,
+      options: [
+        { text: 'Sport', value: 'sport' },
+        { text: 'Politic', value: 'politic' },
+        { text: 'Games', value: 'games' },
+        { text: 'Music', value: 'music' },
+        { text: 'Car', value: 'car'}
+      ],
+      newtag: null,
+      tinyOptions: {
+        'height': 600,
+      }
     }
   },
   components:{
-    'tinymce-editor': Editor // <- Important part
+    'tinymce-editor': Editor
   },
   methods: {
     sendPage(name) {
       this.$emit('change-page', name)
+    },
+    sendChange (article) {
+      this.$emit('change-send', article)
+    },
+    addTag () {
+      this.options.push({ text: this.newtag, value: this.newtag})
+      this.newtag = null
+    },
+    publishArticle () {
+      const tags = this.selected;
+      const title = this.title;
+      const content = this.Content;
+      let formData = new FormData();
+      formData.append('image', this.file);
+      formData.append('title', title);
+      formData.append('content', content);
+      formData.append('tags', tags)
+      
+      axios({
+        method: 'post',
+        url: 'http://localhost:3000/articles/upload',
+        data: formData,
+        headers: {
+          token: localStorage.getItem('token')
+        },
+        config: { headers: { 'Content-Type': 'multipart/form-data' } }
+      })
+        .then(({data}) => {
+          swal.fire({
+            position: 'top-right',
+            title: data.msg,
+            showConfirmButton: false,
+            timer: 1500
+          })
+          this.sendChange(data.article)
+        })
+        .catch(err => {
+          console.log(err);
+          swal.fire({
+            type: 'warning',
+            title: err.response.data.msg
+          })
+        })
     }
   }
 }
 </script>
 
 <style>
+#content {
+  margin-top: 10px
+}
+#inputTag{
+  border-radius: 10px
+}
+.rightMenu{
+  margin-top: 50px
+}
+#checkboxgroup{
+  padding: 20px
+}
+#checkbox-group-1 {
+  display: flex;
+}
 .pilltag {
   font-size: 15px !important;
   margin-left : 10px;
@@ -111,7 +217,7 @@ export default {
 }
 .body-container {
   display: flex;
-  height: 86vh
+  height: 85.5vh
 }
 #navcreate {
   display: flex;

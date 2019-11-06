@@ -6,14 +6,9 @@
           <div class="col">
           </div>
           <div class="col dcpress">
-            <button type="button" class="btn btn-outline-light btn-lg site-btns btnWrite"><v-icon class='ihome' name='book'></v-icon> &nbsp; My Site</button>
+            <h2 id="idText">DcWordPress</h2>
           </div>
         </div>
-          <div class="col">
-          </div>
-          <div class="col dcpress">
-            <button type="button" class="btn btn-outline-light btn-lg site-btns btnWrite"><v-icon class='ihome' name='trello'></v-icon> &nbsp; Reader</button>
-          </div>
       </b-row>
 
       <!-- Right aligned nav items -->
@@ -46,11 +41,16 @@ export default {
       this.$emit('backHome')
       swal.fire({
         position: 'top-end',
-        title: 'see youu'
+        title: 'see youu',
+        showConfirmButton: false,
+        timer: 1500
       })
     },
     sendPage (name) {
       this.$emit('change-page', name)
+    },
+    goToDash () {
+      this.$emit('go-dash', "mySite")
     }
   }
 }
@@ -84,5 +84,10 @@ export default {
   font-weight: bold;
   font-size: 20px;
   color: indigo
+}
+
+#idText{
+  font-family: 'Yeon Sung', cursive;
+  font-size: 50px;
 }
 </style>

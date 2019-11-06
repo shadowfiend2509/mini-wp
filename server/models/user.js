@@ -40,6 +40,7 @@ const UserSchema = new Schema({
       ref: 'users'
     }
   ],
+  image: String,
   status: Boolean,
   createdAt: Date
 })
@@ -53,6 +54,7 @@ UserSchema.pre('save', function (next) {
   } else {
     this.status = this.status
   }
+  this.image = 'https://storage.cloud.google.com/newminiwp/1573039401172blue-profile-1-e1538567682109.png?authuser=1'
   this.Followers = [];
   this.Following = [];
   this.RequestIn = [];

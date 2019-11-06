@@ -2,7 +2,7 @@
   <div>
   <b-navbar toggleable="lg" type="dark" id='NavBar'>
     <div class="dcpress">
-      <h2 id="idText">DcWordPress</h2>
+      
     </div>
     <div class='backHome' v-if='getStatus'>
       <button class='btn btn-outline-info btn-sm'><h2>Features</h2></button>

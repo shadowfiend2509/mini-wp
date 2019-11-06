@@ -3,7 +3,7 @@
 
   <!-- NavBar LoginPage -->
 
-  <div v-if='page !== "home" && page !== "signin" && page !== "signup" && page !== "reset" && page !== "makeArticle"'>
+  <div v-if='page == "mainPage"'>
     <div>
       <NavBarLogin 
         :notif='notification'
@@ -15,22 +15,26 @@
       <DashBoard 
         :get-user='user'
         :get-article='article'
+        :isloading='isLoading'
+        @change-page='gotPageFromChild'
+        @reload-fetch='reloadPage'
       />
     </div>
   </div>
   
   <!-- Create Page -->
 
-  <div id="create" v-if='page == "makeArticle"'>
+  <div id="create" v-if='page == "makeArticle" && !isloader'>
     <CreateArticle
       @change-page='gotPageFromChild'
+      @change-send='changeAndUpdate'
       />
   </div>
 
 
   <!-- Home Page without Login -->
 
-  <div id='homee' v-else-if='page == "home"'>
+  <div id='homee' v-else-if='page == "home" && !isloader'>
     <Home 
       @change-page='gotPageFromChild'
       />
@@ -38,7 +42,7 @@
 
   <!-- Signin Page -->
 
-  <div id='signin' v-else-if='page == "signin"'>
+  <div id='signin' v-else-if='page == "signin" && !isloader'>
     <SignIn 
       @change-page='gotPageFromChild'
       @success-signin='statusLogin'
@@ -47,7 +51,7 @@
 
   <!-- Signup Page -->
 
-  <div id="signup" v-else-if='page == "signup"'>
+  <div id="signup" v-else-if='page == "signup" && !isloader'>
     <SignUp
       @change-login='statusLogin'
       @change-page='gotPageFromChild'
@@ -56,7 +60,7 @@
   
   <!-- Reset Password -->
 
-  <div id="reset" v-else-if='page == "reset"'>
+  <div id="reset" v-else-if='page == "reset" && !isloader'>
     <Reset
       @change-page='gotPageFromChild'
       />
@@ -84,8 +88,11 @@ export default {
       page: '',
       isLogin: false,
       user: null,
+      isloader: false,
       article: null,
-      notification: 0
+      notification: 0,
+
+      pageDash: null
     }
   },
   components: {
@@ -95,9 +102,33 @@ export default {
     DashBoard,
     SignUp,
     Reset,
-    CreateArticle
+    CreateArticle,
   },
   methods: {
+    reloadPage () {
+      console.lost('reload in')
+      this.articleLogin()
+        .then(data => {
+          Swal.fire(
+            'Deleted!',
+            'Your file has been deleted.',
+            'success'
+          )
+        })
+        .catch(err => {
+          swal.fire({
+            position: 'top-end',
+            title: err.msg
+          })
+        })
+    },
+    changeAndUpdate (article) {
+      this.article.unshift(article);
+      this.page = 'mainPage'
+    },
+    isLoading(status) {
+      this.isloader = status
+    },
     backhome () {
       this.page = 'home';
       this.user = null;
@@ -115,14 +146,14 @@ export default {
             return this.articleLogin()
           })
           .then(() => {
-              this.getNotification()
-              swal.fire({
-                position: 'top-end',
-                title: `You have ${this.notification} Notification`,
-                showConfirmButton: false,
-                timer: 1500
-              })
-              this.page = 'mainPage'
+            this.getNotification()
+            swal.fire({
+              position: 'top-end',
+              title: `You have ${this.notification} Notification`,
+              showConfirmButton: false,
+              timer: 1500
+            })
+            this.page = 'mainPage'
           })
           .catch(err => {
             swal.fire({
@@ -169,9 +200,6 @@ export default {
       })
     },
     getNotification () {
-      this.article.forEach(el => {
-        this.notification += el.Likes.length
-      })
       this.notification += this.user.Following.length
       this.notification += this.user.RequestIn.length
     }
@@ -212,5 +240,12 @@ export default {
 #homee{
   background-color:#0087BE;
   height: 100vh;
+}
+
+#loading{ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh
 }
 </style>
