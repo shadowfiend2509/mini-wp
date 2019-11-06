@@ -26,4 +26,12 @@ app.use('/', index);
 
 app.use(errorHandler);
 
+
+io.on('connect', function(socket) {
+  socket.on('send', function (data) {
+    io.emit('send-message', data)
+  })
+})
+
+
 http.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));

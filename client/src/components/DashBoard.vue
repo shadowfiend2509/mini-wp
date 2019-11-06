@@ -22,10 +22,17 @@
         <div class="rightDash col-10">
             <div class="container" id='conBody'>
 
+                <!-- Chat Room -->
+                
+                <div class='dashHead' v-if='name == "chatRoom"'>
+                  <Chat 
+                    @change-page='sendPage'
+                  />
+                </div>
 
                 <!-- My Site Page -->
 
-                <div class="dashHead" v-if='name == "mySite"'>
+                <div class="dashHead" v-else-if='name == "mySite"'>
                   
                   <div class="section-head border">
                     <ul>
@@ -113,6 +120,7 @@
 <script>
 import Loading from './Loading'
 import DashBoardLeft from './DashBoardLeft'
+import Chat from './RoomChat'
 import ReaderPage from './ReaderPage'
 import Profile from './Profile'
 import Tag from './Tag'
@@ -136,7 +144,8 @@ export default {
     Profile,
     DashBoardLeft,
     ReaderPage,
-    Tag
+    Tag,
+    Chat
   },
   props: ['getUser', 'getArticle', 'isloading', 'functionLogin'],
   methods: {

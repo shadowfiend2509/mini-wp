@@ -12,6 +12,9 @@
             <ul class="menu-need-hover" @click='changeLocal("manage")'>
                 <v-icon class='iconn' name='monitor'></v-icon> &nbsp; Monitoring
             </ul>
+            <ul class="menu-need-hover" @click='changeLocal("request")'>
+                <v-icon class='iconn' name='git-pull-request'></v-icon> &nbsp; Request
+            </ul>
           </div>
       </div>
       <div class="col-9 custCol border">
@@ -31,7 +34,7 @@
         <!-- Manage Profile --> 
 
         <div v-else-if='pageLocal == "manage"'>
-          Manage
+          <ManageProfile :get-user='getUser'/>
         </div>
 
 
@@ -42,6 +45,7 @@
 
 <script>
 import PageProfile from './LocalProfile/PageProfile'
+import ManageProfile from './LocalProfile/ManageProfile'
 
 export default {
   data () {
@@ -51,7 +55,8 @@ export default {
     }
   },
   components: {
-    PageProfile
+    PageProfile,
+    ManageProfile
   },
   props: ['getUser'],
   methods: {

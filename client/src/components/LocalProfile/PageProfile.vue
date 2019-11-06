@@ -88,6 +88,7 @@ export default {
         config: { headers: { 'Content-Type': 'multipart/form-data' } }
       })
         .then(({data}) => {
+          this.getProfile.image = data.url
           swal.fire({
             position: 'top-right',
             title: 'Success update picture'

@@ -79,7 +79,7 @@ module.exports = {
     const url = req.file.cloudStoragePublicUrl;
     User.findByIdAndUpdate({ _id: req.loggedUser.id }, {image: url})
       .then(user => {
-        res.status(200).json({user})
+        res.status(200).json({ url })
       })
       .catch(next)
   },

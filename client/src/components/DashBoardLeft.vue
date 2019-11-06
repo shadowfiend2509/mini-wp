@@ -13,6 +13,9 @@
         <ul class="menu-need-hover">
             <v-icon name='users' class='iconn'></v-icon> &nbsp; Find Friends
         </ul>
+        <ul class="menu-need-hover" @click='responseSite("chatRoom")'>
+            <v-icon name='message-circle' class='iconn'></v-icon> &nbsp; Chat
+        </ul>
         <ul class="menu-need-hover">
             <v-icon name='star' class='iconn'></v-icon> &nbsp; My Like
         </ul>
@@ -30,9 +33,6 @@
         </ul>
         <ul class="menu-need-hover" @click='responseSite("profile")'>
             <v-icon class='iconn' name='settings'></v-icon> &nbsp; Profile
-        </ul>
-        <ul class="menu-need-hover">
-            <v-icon name='message-circle' class='iconn'></v-icon> &nbsp; Chatting
         </ul>
         <ul class="menu-need-hover">
             <i class="submenu-logo fas fa-comment-alt"></i> &nbsp; Feedback

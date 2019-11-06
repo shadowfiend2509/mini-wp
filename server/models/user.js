@@ -42,7 +42,8 @@ const UserSchema = new Schema({
   ],
   image: String,
   status: Boolean,
-  createdAt: Date
+  createdAt: Date,
+  color: String
 })
 
 UserSchema.pre('save', function (next) {
@@ -59,6 +60,9 @@ UserSchema.pre('save', function (next) {
   this.Following = [];
   this.RequestIn = [];
   this.RequestOut = [];
+  let temp = ['dark', 'warning', 'primary', 'secondary', 'warning', 'danger', 'info', 'indigo', 'light'];
+  let rand = Math.floor(Math.random() * temp.length);
+  this.color = temp[rand]
   next()
 })
 
