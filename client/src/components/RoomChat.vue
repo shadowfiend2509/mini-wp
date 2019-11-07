@@ -97,7 +97,6 @@ export default {
     this.fetchMessage();
     this.fetchUser();
     this.socket.on('send-message', (data) => {
-
       this.messages.unshift(data)
       data = null
     })

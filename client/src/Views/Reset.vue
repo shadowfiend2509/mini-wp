@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import HomeNavBar from './HomeNavBar'
+import HomeNavBar from '../components/HomeNavBar'
 import axios from 'axios'
 import swal from 'sweetalert2'
 

@@ -5,19 +5,14 @@
 
   <div v-if='page == "mainPage"'>
     <div>
-      <NavBarLogin 
-        :notif='notification'
-        @backHome='backhome'
-        @change-page='gotPageFromChild'
-        />
-    </div>
-    <div>
       <DashBoard 
         :get-user='user'
         :get-article='article'
         :isloading='isLoading'
         @change-page='gotPageFromChild'
         @reload-fetch='reloadPage'
+        :notif='notification'
+        @backHome='backhome'
       />
     </div>
   </div>
@@ -71,15 +66,17 @@
 </template>
 
 <script>
-import CreateArticle from './components/CreateArticle'
+import CreateArticle from './Views/CreateArticle'
+import DashBoard from './Views/DashBoard'
+import Home from './Views/Home'
+import SignIn from './Views/SignIn'
+import SignUp from './Views/SignUp'
+import Reset from './Views/Reset'
 import NavBarLogin from './components/NavBarLogin'
-import Home from './components/Home'
-import DashBoard from './components/DashBoard'
-import SignIn from './components/SignIn'
-import SignUp from './components/SignUp'
-import Reset from './components/Reset'
 import swal from 'sweetalert2'
 import axios from 'axios'
+
+
 
 export default {
   data () {
@@ -242,10 +239,4 @@ export default {
   height: 100vh;
 }
 
-#loading{ 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh
-}
 </style>

@@ -2,18 +2,9 @@
   <div id='cusCon' class="border">
     <div class="row">
       <div class="col-3 custCol border">
-          <div id="sub-menu">
-            <ul class="menu-need-hover" @click='changeLocal("profile")'>
-              <v-icon name='minimize' class='iconn'></v-icon> &nbsp;Profile
-            </ul>
-            <ul class="menu-need-hover" @click='changeLocal("setting")'>
-                <v-icon class='iconn' name='settings'></v-icon> &nbsp; Setting
-            </ul>
-            <ul class="menu-need-hover" @click='changeLocal("manage")'>
-                <v-icon class='iconn' name='monitor'></v-icon> &nbsp; Monitoring
-            </ul>
-            <ul class="menu-need-hover" @click='changeLocal("request")'>
-                <v-icon class='iconn' name='git-pull-request'></v-icon> &nbsp; Request
+          <div id="sub-menu" v-for='(profile, i) in profiles' :key='i'>
+            <ul class="menu-need-hover" @click='changeLocal(profile.click)'>
+              <v-icon :name='profile.icon' class='iconn'></v-icon> &nbsp; {{ profile.name }}
             </ul>
           </div>
       </div>
@@ -50,6 +41,12 @@ import ManageProfile from './LocalProfile/ManageProfile'
 export default {
   data () {
     return {
+      profiles: [
+        { icon: 'minimize', click: 'profile', name: 'Profile' },
+        { icon: 'settings', click: 'setting', name: 'Setting' },
+        { icon: 'monitor', click: 'manage', name: 'Monitoring' },
+        { icon: 'git-pull-request', click: 'request', name: 'Request' }
+      ],
       pageLocal: null,
       user: null
     }

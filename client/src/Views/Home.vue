@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import HomeNavBar from './homeNavBar'
+import HomeNavBar from '../components/HomeNavBar'
 import swal from 'sweetalert2'
 
 export default {

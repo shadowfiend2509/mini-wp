@@ -1,6 +1,13 @@
 <template>
   <!-- LOADING PAGE -->
 
+<div>
+  <div>
+      <NavBarLogin 
+        :notif='notif'
+        @change-page='sendPageToParent'
+        />
+    </div>
   <div id='loading' v-if='isloader'>
     <Loading
       />
@@ -67,7 +74,7 @@
                           </div>
                           <div class='btntgls'>
                               <button class="btn btn-outline-primary" disabled><v-icon class='ticon' name='thumbs-up'></v-icon> {{ article.Likes.length }}</button>
-                            <div v-if='open && target == article._id'>
+                            <div v-if='open && target == article._id' :style='tran'>
                               <button class="btn btn-outline-info"><v-icon class='ticon' name='edit'></v-icon>Edit</button>
                               <button class="btn btn-outline-danger" @click='deleteArticle(article._id)'><v-icon class='ticon' name='trash-2'></v-icon>Delete</button>
                             </div>
@@ -93,6 +100,13 @@
                 </div>
 
 
+                <!-- Search User -->
+
+                <div class="dashHead" v-else-if='name == "searchUser"'>
+
+                </div>
+
+
                 <!-- Tags Page -->
 
                 <div class="dashHead" v-else-if='name == "tags"'>
@@ -100,7 +114,7 @@
                 </div>
 
 
-                <!-- profile Page -->
+                <!-- Profile Page -->
 
                 <div class='dashHead' v-else-if='name == "profile"'>
                   <Profile :get-user='getUser' :function-login='functionLogin'/>
@@ -115,17 +129,19 @@
         <p>Powered by <v-icon name='copy' class='iconcop'></v-icon> <span>DreamCar Official</span></p>
       </div>
   </div>
+</div>
 </template>
 
 <script>
-import Loading from './Loading'
-import DashBoardLeft from './DashBoardLeft'
-import Chat from './RoomChat'
-import ReaderPage from './ReaderPage'
-import Profile from './Profile'
-import Tag from './Tag'
+import Loading from '../components/Loading'
+import DashBoardLeft from '../components/DashBoardLeft'
+import Chat from '../components/RoomChat'
+import ReaderPage from '../components/ReaderPage'
+import Profile from '../components/Profile'
+import Tag from '../components/Tag'
 import swal from 'sweetalert2'
 import axios from 'axios'
+import NavBarLogin from '../components/NavBarLogin'
 
 export default {
   data () {
@@ -136,7 +152,8 @@ export default {
       isloader: false,
       target: null,
       name: null,
-      searchTagName: null
+      searchTagName: null,
+      tran: null
     }
   },
   components: {
@@ -145,9 +162,10 @@ export default {
     DashBoardLeft,
     ReaderPage,
     Tag,
-    Chat
+    Chat,
+    NavBarLogin
   },
-  props: ['getUser', 'getArticle', 'isloading', 'functionLogin'],
+  props: ['getUser', 'getArticle', 'isloading', 'functionLogin', 'notif'],
   methods: {
     searchTag (name) {
       this.searchTagName = name
@@ -161,11 +179,14 @@ export default {
     },
     sendPage (name) {
       this.name = name
-      console.log(name)
+    },
+    sendPageToParent (name) {
+      this.$emit('change-page', name)
     },
     toggle(id) {
       this.target = id
       this.open = !this.open;
+      this.tran = 'transition: .20s all ease;'
     },
     fetchingData () {
       this.isloader = true
@@ -366,4 +387,10 @@ img{
   flex-direction: row;
 }
 
+#loading{ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh
+}
 </style>

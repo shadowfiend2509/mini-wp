@@ -36,7 +36,9 @@
               </ul>
             </div>
             <div class='btntgls'>
-                <button class="btn btn-outline-primary" @click='likeArticle(article._id)'><v-icon class='ticon' name='thumbs-up'></v-icon> {{ article.Likes.length }} Likes</button>
+              <button class="btn btn-outline-primary" @click='likeArticle(article._id)'>
+                <v-icon class='ticon' name='thumbs-up'></v-icon> {{ article.Likes.length }} Likes
+              </button>
             </div>
           </div>
         </div>

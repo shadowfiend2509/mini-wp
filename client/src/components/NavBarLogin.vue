@@ -24,7 +24,7 @@
           <button type="button" class="btn btn-outline-light btn-lg site-btns"><v-icon class='ihome' name='user'></v-icon></button>
         </b-col>
         <b-col>
-          <button type="button" class="btn btn-outline-light btn-lg site-btns" @click='signout()'><v-icon class='ihome' name='power'></v-icon></button>
+          <button type="button" class="btn btn-outline-light btn-lg site-btns" @click='signout("home")'><v-icon class='ihome' name='power'></v-icon></button>
       </b-navbar-nav>
     </b-navbar>
   </div>
@@ -36,9 +36,10 @@ import swal from 'sweetalert2'
 export default {
   props: ['notif'],
   methods: {
-    signout () {
+    signout (name) {
       localStorage.removeItem('token');
-      this.$emit('backHome')
+      this.$emit('change-page', name)
+      console.log(name)
       swal.fire({
         position: 'top-end',
         title: 'see youu',

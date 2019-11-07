@@ -4,59 +4,28 @@
   <h5 class="left-menus">Streams</h5>
   <hr>
     <div id="sub-menu">
-        <ul class="menu-need-hover" @click='responseSite("public")'>
-            <v-icon name='more-horizontal' class='iconn'></v-icon> &nbsp;Public Site
+      <div v-for='(stream, i) in streams' :key='i'>
+        <ul class="menu-need-hover" @click='responseSite(stream.click)'>
+            <v-icon :name='stream.icon' class='iconn'></v-icon> &nbsp; {{ stream.name }}
         </ul>
-        <ul class="menu-need-hover">
-            <v-icon name='check-circle' class='iconn'></v-icon> &nbsp; Followed Sites
-        </ul>
-        <ul class="menu-need-hover">
-            <v-icon name='users' class='iconn'></v-icon> &nbsp; Find Friends
-        </ul>
-        <ul class="menu-need-hover" @click='responseSite("chatRoom")'>
-            <v-icon name='message-circle' class='iconn'></v-icon> &nbsp; Chat
-        </ul>
-        <ul class="menu-need-hover">
-            <v-icon name='star' class='iconn'></v-icon> &nbsp; My Like
-        </ul>
+      </div>
     </div>
 </div>
 <div>
   <h5 class="left-menus">Manage</h5>
   <hr>
     <div id="sub-menu">
-        <ul class="menu-need-hover" @click='responseSite("mySite")'>
-          <v-icon name='minimize' class='iconn'></v-icon> &nbsp;Site Pages
+      <div v-for='(manage, i) in manages' :key='i'>
+        <ul class="menu-need-hover" @click='responseSite(manage.click)'>
+          <v-icon :name='manage.icon' class='iconn'></v-icon> &nbsp; {{ manage.name }}
         </ul>
-        <ul class="menu-need-hover">
-            <i class="submenu-logo far fa-clipboard"></i> &nbsp; Blog Post
-        </ul>
-        <ul class="menu-need-hover" @click='responseSite("profile")'>
-            <v-icon class='iconn' name='settings'></v-icon> &nbsp; Profile
-        </ul>
-        <ul class="menu-need-hover">
-            <i class="submenu-logo fas fa-comment-alt"></i> &nbsp; Feedback
-        </ul>
-        <ul class="menu-need-hover">
-            <i class="submenu-logo fas fa-scroll"></i> &nbsp; Testimonials
-        </ul>
+      </div>
         <ul class="menu-need-hover" v-b-toggle.collapse-a.collapse-b>
             <v-icon class='ipor' name='award'></v-icon> &nbsp; <a id='portFolio'>Portofolio</a>
-
-            <!-- Elements to collapse -->
         </ul>
-        <div id="colaps">
+        <div id="colaps" v-for='(portfol, i) in collaps' :key='i'>
           <b-collapse id="collapse-a" class="mt-2">
-            <a href='http://started.dreamcarofficial.com' target="_"><b-card class='portIn'>E-Commerce</b-card></a>
-          </b-collapse>
-          <b-collapse id="collapse-b" class="mt-2">
-            <a href='http://todo.dreamcarofficial.com' target="_"><b-card class='portIn'>Fancy-Todo</b-card></a>                  
-          </b-collapse>
-          <b-collapse id="collapse-b" class="mt-2">
-            <a href='http://dcoverflow.dreamcarofficial.com.s3-website-ap-southeast-1.amazonaws.com/' target="_"><b-card class='portIn'>Dc-OverFlow</b-card></a>                  
-          </b-collapse>
-          <b-collapse id="collapse-b" class="mt-2">
-            <a href='https://kamvan-d66ed.firebaseapp.com/' target="_"><b-card class='portIn'>Dc-Kamban</b-card></a>                  
+            <a :href='portfol.link' target="_"><b-card class='portIn'>{{ portfol.name }}</b-card></a>
           </b-collapse>
         </div>
     </div>
@@ -66,6 +35,28 @@
 
 <script>
 export default {
+  data () {
+    return {
+      streams: [
+        { icon: 'more-horizontal', name: 'Public Site', click: 'public' },
+        { icon: 'check-circle', name: 'Followed Site', click: '' },
+        { icon: 'users', name: 'Find Friends', click: 'searchUser' },
+        { icon: 'message-circle', name: 'Chat', click: 'chatRoom' },
+        { icon: 'check-circle', name: 'Followed Site', click: '' },
+      ],
+      manages: [
+        { icon: 'minimize', name: 'Site Pages', click: 'mySite' },
+        { icon: 'settings', name: 'Profile', click: 'profile' },
+        { icon: '', name: 'Testimonials', click: 'mySite' }
+      ],
+      collaps: [
+        { link: 'http://started.dreamcarofficial.com', name: 'E-Commerce' },
+        { link: 'http://todo.dreamcarofficial.com', name: 'Fancy-Todo' },
+        { link: 'http://dcoverflow.dreamcarofficial.com.s3-website-ap-southeast-1.amazonaws.com/', name: 'Dc-OverFlow' },
+        { link: 'https://kamvan-d66ed.firebaseapp.com/', name: 'Dc-Kamban' }
+      ]
+    }
+  },
   methods: {
     responseSite (name) {
       this.$emit('response-site', name)
