@@ -15,18 +15,20 @@
   <h5 class="left-menus">Manage</h5>
   <hr>
     <div id="sub-menu">
-      <div v-for='(manage, i) in manages' :key='i'>
-        <ul class="menu-need-hover" @click='responseSite(manage.click)'>
-          <v-icon :name='manage.icon' class='iconn'></v-icon> &nbsp; {{ manage.name }}
+      <div v-for='(manage, i1) in manages' :key='i1'>
+        <ul class="menu-need-hover" @click='responseSite(manage.clickM)'>
+          <v-icon :name='manage.iconM' class='iconn'></v-icon> &nbsp; {{ manage.nameM }}
         </ul>
       </div>
         <ul class="menu-need-hover" v-b-toggle.collapse-a.collapse-b>
             <v-icon class='ipor' name='award'></v-icon> &nbsp; <a id='portFolio'>Portofolio</a>
         </ul>
-        <div id="colaps" v-for='(portfol, i) in collaps' :key='i'>
+        <div>
+        <div id="colaps" v-for='(portfol, i2) in collaps' :key='i2'>
           <b-collapse id="collapse-a" class="mt-2">
-            <a :href='portfol.link' target="_"><b-card class='portIn'>{{ portfol.name }}</b-card></a>
+            <a :href='portfol.link' target="_"><b-card class='portIn'>{{ portfol.nameC }}</b-card></a>
           </b-collapse>
+        </div>
         </div>
     </div>
 </div>
@@ -40,20 +42,20 @@ export default {
       streams: [
         { icon: 'more-horizontal', name: 'Public Site', click: 'public' },
         { icon: 'check-circle', name: 'Followed Site', click: '' },
-        { icon: 'users', name: 'Find Friends', click: 'searchUser' },
+        { icon: 'users', name: 'Find Friends', click: 'globalUser' },
         { icon: 'message-circle', name: 'Chat', click: 'chatRoom' },
         { icon: 'check-circle', name: 'Followed Site', click: '' },
       ],
       manages: [
-        { icon: 'minimize', name: 'Site Pages', click: 'mySite' },
-        { icon: 'settings', name: 'Profile', click: 'profile' },
-        { icon: '', name: 'Testimonials', click: 'mySite' }
+        { iconM: 'minimize', nameM: 'Site Pages', clickM: 'mySite' },
+        { iconM: 'settings', nameM: 'Profile', clickM: 'profile' },
+        { iconM: '', nameM: 'Testimonials', clickM: 'mySite' }
       ],
       collaps: [
-        { link: 'http://started.dreamcarofficial.com', name: 'E-Commerce' },
-        { link: 'http://todo.dreamcarofficial.com', name: 'Fancy-Todo' },
-        { link: 'http://dcoverflow.dreamcarofficial.com.s3-website-ap-southeast-1.amazonaws.com/', name: 'Dc-OverFlow' },
-        { link: 'https://kamvan-d66ed.firebaseapp.com/', name: 'Dc-Kamban' }
+        { link: 'http://started.dreamcarofficial.com', nameC: 'E-Commerce' },
+        { link: 'http://todo.dreamcarofficial.com', nameC: 'Fancy-Todo' },
+        { link: 'http://dcoverflow.dreamcarofficial.com.s3-website-ap-southeast-1.amazonaws.com/', nameC: 'Dc-OverFlow' },
+        { link: 'https://kamvan-d66ed.firebaseapp.com/', nameC: 'Dc-Kamban' }
       ]
     }
   },

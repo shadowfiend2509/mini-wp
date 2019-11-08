@@ -11,6 +11,7 @@ const errorHandler = require('./middlewares/errorHandler');
 const app = express();
 const http = require('http').createServer(app);
 const PORT = process.env.PORT || 3000;
+const Article = require('./models/article')
 const io = require('socket.io')(http);
 
 app.use(cors());
@@ -31,7 +32,24 @@ io.on('connect', function(socket) {
   socket.on('send', function (data) {
     io.emit('send-message', data)
   })
+  
+  socket.on('createArticle', function (id) {
+    getArticle(id)
+      .then(data => {
+        io.emit('createArticle', data)
+      })
+      .catch(console.log)
+  })
 })
 
+function getArticle (id) {
+  return new Promise ((resolve, reject) => {
+    Article.findById(id).populate('Author')
+      .then(article => {
+        resolve(article)
+      })
+      .catch(reject)
+  })
+}
 
 http.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));

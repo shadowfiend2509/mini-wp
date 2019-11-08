@@ -43,7 +43,7 @@
                   
                   <div class="section-head border">
                     <ul>
-                      <li>Published <a id='cicle'>{{ articlee.length }}</a></li>
+                      <li>Published <a id='cicle'>{{ getArticle.length }}</a></li>
                     </ul>
                   </div>
 
@@ -58,7 +58,7 @@
                     </div>
                   </div>
 
-                  <div class="section-head3 border" v-for='(article, i) in articlee' :key='i'>
+                  <div class="section-head3 border" v-for='(article, i) in getArticle' :key='i'>
                     <div class="cardd">
                       <div class='card-texts col-8'>
                         <div id='titledesc'>
@@ -100,10 +100,10 @@
                 </div>
 
 
-                <!-- Search User -->
+                <!-- Global User -->
 
-                <div class="dashHead" v-else-if='name == "searchUser"'>
-
+                <div class="dashHead" v-else-if='name == "globalUser"'>
+                  <GlobalUser />
                 </div>
 
 
@@ -117,7 +117,7 @@
                 <!-- Profile Page -->
 
                 <div class='dashHead' v-else-if='name == "profile"'>
-                  <Profile :get-user='getUser' :function-login='functionLogin'/>
+                  <Profile :get-user='getUser' />
                 </div>
 
             </div>
@@ -138,10 +138,12 @@ import DashBoardLeft from '../components/DashBoardLeft'
 import Chat from '../components/RoomChat'
 import ReaderPage from '../components/ReaderPage'
 import Profile from '../components/Profile'
+import GlobalUser from '../components/GlobalUser'
 import Tag from '../components/Tag'
 import swal from 'sweetalert2'
 import axios from 'axios'
 import NavBarLogin from '../components/NavBarLogin'
+import io from 'socket.io-client'
 
 export default {
   data () {
@@ -153,7 +155,8 @@ export default {
       target: null,
       name: null,
       searchTagName: null,
-      tran: null
+      tran: null,
+      socket: io.connect('http://localhost:3000')
     }
   },
   components: {
@@ -163,9 +166,10 @@ export default {
     ReaderPage,
     Tag,
     Chat,
-    NavBarLogin
+    NavBarLogin,
+    GlobalUser
   },
-  props: ['getUser', 'getArticle', 'isloading', 'functionLogin', 'notif'],
+  props: ['getUser', 'getArticle', 'isloading', 'notif', 'promiseArticle'],
   methods: {
     searchTag (name) {
       this.searchTagName = name
@@ -203,35 +207,38 @@ export default {
       }
     },
     deleteArticle (id) {
-      swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      })
-      .then((result) => {
-        if (result.value) {
-          return axios({
-            method: 'delete',
-            url: `http://localhost:3000/articles/${id}`,
-            headers: {
-              token: localStorage.getItem('token')
-            }
-          })
-        }
-      })
-      .then(({data}) => {
-        this.$emit('reload-fetch')
-      })
-      .catch(err => {
-        swal.fire({
-          type: 'error',
-          title: err.response.data.msg
+      this.$awn.asyncBlock(
+        this.deleting(id),
+        'Deleting success',
+        'error',
+        'Loading'
+      )
+    },
+    deleting (id) {
+      return new Promise ((resolve, reject) => {
+        axios({
+          method: 'delete',
+          url: `http://localhost:3000/articles/${id}`,
+          headers: {
+            token: localStorage.getItem('token')
+          }
+        })
+        .then(({data}) => {
+          this.$emit('delete-article')
+          resolve()
+        })
+        .catch(err => {
+          reject(err.response.data.msg)
         })
       })
+    }
+  },
+  watch: {
+    getArticle: {
+      handler(val) {
+        this.articlee = val
+      },
+      data: true
     }
   },
   created () {

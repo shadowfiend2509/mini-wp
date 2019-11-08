@@ -7,9 +7,16 @@ const mongoose = require('mongoose');
 
 module.exports = {
   findAllUser (req, res, next) {
+    const email = req.loggedUser.email
     User.find()
       .then(users => {
-        res.status(200).json(users);
+        let temp = [];
+        for(let i=0; i<users.length; i++) {
+          if(users[i].email !== email) {
+            temp.push(users[i])
+          }
+        }
+        res.status(200).json(temp);
       })
       .catch(next)
   },
@@ -44,8 +51,8 @@ module.exports = {
       .catch(next)
   },
   signin (req, res, next) {
-    const {email, password} = req.body;
-    User.findOne({ email })
+    const {signuser, password} = req.body;
+    User.findOne({ $or: [{username: signuser}, {email: signuser}] })
       .then(user => {
         if(user && comparePassword(password, user.password)) {
           const payload = {
@@ -96,28 +103,29 @@ module.exports = {
   },
   followingStatusFalse (req, res, next) { //can follow / unfollow
     const _id = req.params.id;
+    let pass = true
     User.findById({ _id })
       .then(user => {
-        let pass = true;
         for(let i=0; i<user.Followers.length; i++) {
           if(user.Followers[i] == req.loggedUser.id) {
             pass = false
           }
         }
+        console.log(`ini dari pass atas ${pass}`)
         let id = new mongoose.Types.ObjectId(req.loggedUser.id)
         if(!pass) {
-          return User.findByIdAndUpdate({ _id }, {$pull: {Followers: id}})
+          return User.findByIdAndUpdate({ _id }, {$pull: {Followers: id}}, {new: true})
         } else {
-          return User.findByIdAndUpdate({ _id }, {$push: {Followers: id}})
+          return User.findByIdAndUpdate({ _id }, {$push: {Followers: id}}, {new: true})
         }
       })
       .then((a) => {
         let _id = new mongoose.Types.ObjectId(req.loggedUser.id);
         let targetId = new mongoose.Types.ObjectId(req.params.id);
-        if(a.Followers.length == 0) {
-          return User.findByIdAndUpdate({ _id }, {$push: {Following: targetId}})
-        } else {
+        if(!pass) {
           return User.findByIdAndUpdate({ _id }, {$pull: {Following: targetId}})
+        } else {
+          return User.findByIdAndUpdate({ _id }, {$push: {Following: targetId}})
         }
       })
       .then((a) => {

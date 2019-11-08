@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@tinymce/tinymce-vue": "^3.0.1",
+    "awesome-notifications": "^3.0.3",
     "axios": "^0.19.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.4",
@@ -19,6 +20,7 @@
     "socket.io-client": "^2.3.0",
     "sweetalert2": "^8.19.0",
     "vue": "^2.6.10",
+    "vue-awesome-notifications": "^3.0.3",
     "vue-hot-reload-api": "^2.3.4",
     "vue-icon": "^2.1.1",
     "vue-slide-toggle": "^1.1.1",

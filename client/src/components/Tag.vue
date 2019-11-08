@@ -28,15 +28,15 @@
             <div id="profille">
               <v-icon name='user' class='ticon'></v-icon> &nbsp; {{ article.Author.username }}
             </div>
-          </div>
-          <div id='tagss'>
-            <div>
-              <ul>
-                <li v-for='(tag, i) in article.tags' :key='i'>  <b-badge href="#" class='taggs'> {{ tag }}</b-badge> &nbsp;</li>
-              </ul>
-            </div>
-            <div class='btntgls'>
-                <button class="btn btn-outline-primary" ><v-icon class='ticon' name='thumbs-up'></v-icon> {{ article.Likes.length }}  Likes</button>
+            <div class="space">
+              <div class='btntgls'>
+                <ul>
+                  <li v-for='(tag, i) in article.tags' :key='i'>  <b-badge href="#" class='taggs'> {{ tag }}</b-badge> &nbsp;</li>
+                </ul>
+              </div>
+              <div class='imbtn'>
+                <button class="btn btn-outline-primary mt-4" ><v-icon class='ticon' name='thumbs-up'></v-icon> {{ article.Likes.length }}  Likes</button>
+              </div>
             </div>
           </div>
         </div>
@@ -103,4 +103,11 @@ export default {
 </script>
 
 <style>
+.imbtn{
+  height: 25px !important
+}
+.space{
+  display: flex;
+  justify-content: space-between
+}
 </style>

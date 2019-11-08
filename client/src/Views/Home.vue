@@ -10,9 +10,9 @@
         <div class="quote">
           <span class="left">❝</span>
           <blockquote>
-            “If you want to be a writer, you must do two things above all: Read a lot and write a lot”
+            “{{ quote.body }}”
           </blockquote>
-          <small>Stephen King</small>
+          <small>{{ quote.author }}</small>
           <span class="right">❞</span>
         </div>
 
@@ -37,12 +37,14 @@
 
 <script>
 import HomeNavBar from '../components/HomeNavBar'
+import axios from 'axios'
 import swal from 'sweetalert2'
 
 export default {
   data () {
     return {
-      statusNav: ''
+      statusNav: '',
+      quote: null
     }
   },
   components: {
@@ -51,7 +53,29 @@ export default {
   methods: {
     sendPage(name) {
       this.$emit('change-page', name)
+    },
+    fetchQuote () {
+      return new Promise ((resolve, reject) => {
+        axios({
+          method: 'get',
+          url: 'http://localhost:3000/quote'
+        })
+          .then(({data}) => {
+            this.quote = data
+            console.log(data)
+            resolve()
+          })
+          .catch(reject)
+      })
     }
+  },
+  created () {
+    this.$awn.asyncBlock(
+      this.fetchQuote(),
+      'Finish',
+      null,
+      'Loading'
+    )
   }
 }
 </script>

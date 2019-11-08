@@ -39,7 +39,6 @@ export default {
     signout (name) {
       localStorage.removeItem('token');
       this.$emit('change-page', name)
-      console.log(name)
       swal.fire({
         position: 'top-end',
         title: 'see youu',

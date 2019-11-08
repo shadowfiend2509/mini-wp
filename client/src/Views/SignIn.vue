@@ -10,7 +10,7 @@
         <h2 class="login-header">Sign In</h2>
 
         <form class="login-container" @submit.prevent="signin">
-          <p><input type="email" v-model='inemail' placeholder="username@example.com"></p>
+          <p><input type="text" v-model='inemail' placeholder="username / email"></p>
           <p><input type="password" v-model='inpassword' placeholder="Password"></p>
           <p><input type="submit" value="Sign In"></p>
           <div style='border-bottom: 1px; border-top: 1px'>
@@ -56,7 +56,7 @@ export default {
         method: 'post',
         url: `${this.baseUrl}/users/signin`,
         data: {
-          email: this.inemail,
+          signuser: this.inemail,
           password: this.inpassword
         }
       })

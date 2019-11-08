@@ -90,7 +90,7 @@
 <script>
 import Editor from '@tinymce/tinymce-vue';
 import axios from 'axios'
-import swal from 'sweetalert2'
+import io from 'socket.io-client'
 
 export default {
   data() {
@@ -109,7 +109,8 @@ export default {
       newtag: null,
       tinyOptions: {
         'height': 600,
-      }
+      },
+      socket: io.connect('http://localhost:3000')
     }
   },
   components:{
@@ -127,6 +128,15 @@ export default {
       this.newtag = null
     },
     publishArticle () {
+      this.$awn.asyncBlock(
+        this.uploading(),
+        'Success create new Post!',
+        'Failed',
+        'Uploading'
+      )
+    },
+    uploading () {
+      return new Promise ((resolve, reject) => {
       const tags = this.selected;
       const title = this.title;
       const content = this.Content;
@@ -146,21 +156,15 @@ export default {
         config: { headers: { 'Content-Type': 'multipart/form-data' } }
       })
         .then(({data}) => {
-          swal.fire({
-            position: 'top-right',
-            title: data.msg,
-            showConfirmButton: false,
-            timer: 1500
-          })
+          console.log(data)
+          this.socket.emit('createArticle', data.article._id)
           this.sendChange(data.article)
+          resolve()
         })
         .catch(err => {
-          console.log(err);
-          swal.fire({
-            type: 'warning',
-            title: err.response.data.msg
-          })
+          reject(err)
         })
+      })
     }
   }
 }

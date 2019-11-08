@@ -9,10 +9,12 @@
         :get-user='user'
         :get-article='article'
         :isloading='isLoading'
-        @change-page='gotPageFromChild'
-        @reload-fetch='reloadPage'
+        :promise-article='articleLogin'
         :notif='notification'
+        @change-page='gotPageFromChild'
+        @fetch-reload='reloadPage'
         @backHome='backhome'
+        @delete-article='deleteArticle'
       />
     </div>
   </div>
@@ -76,6 +78,8 @@ import NavBarLogin from './components/NavBarLogin'
 import swal from 'sweetalert2'
 import axios from 'axios'
 
+import io from 'socket.io-client'
+
 
 
 export default {
@@ -89,6 +93,7 @@ export default {
       article: null,
       notification: 0,
 
+      socket: io.connect('http://localhost:3000'),
       pageDash: null
     }
   },
@@ -106,11 +111,6 @@ export default {
       console.lost('reload in')
       this.articleLogin()
         .then(data => {
-          Swal.fire(
-            'Deleted!',
-            'Your file has been deleted.',
-            'success'
-          )
         })
         .catch(err => {
           swal.fire({
@@ -144,12 +144,7 @@ export default {
           })
           .then(() => {
             this.getNotification()
-            swal.fire({
-              position: 'top-end',
-              title: `You have ${this.notification} Notification`,
-              showConfirmButton: false,
-              timer: 1500
-            })
+            this.$awn.info(`You have ${this.notification} Notification`)
             this.page = 'mainPage'
           })
           .catch(err => {
@@ -199,6 +194,18 @@ export default {
     getNotification () {
       this.notification += this.user.Following.length
       this.notification += this.user.RequestIn.length
+    },
+    deleteArticle () {
+      console.log('triger delete app')
+      this.articleLogin()
+        .then(data => {
+          console.log(data)
+          this.article = data;
+          console.log(this.article)
+        })
+        .catch(err => {
+          this.$awn.warning(err.response.data.msg)
+        })
     }
   },
   created () {
@@ -211,12 +218,7 @@ export default {
         .then(data => {
           setTimeout(() => {
             this.getNotification()
-            swal.fire({
-              position: 'top-end',
-              title: `You have ${this.notification} Notification`,
-              showConfirmButton: false,
-              timer: 1500
-            })
+            this.$awn.info(`You have ${this.notification} Notification`)            
           }, 2000);
         })
         .catch(err => {
@@ -228,6 +230,7 @@ export default {
     } else {
       this.page = 'home'
     }
+
   }
 }
 </script>

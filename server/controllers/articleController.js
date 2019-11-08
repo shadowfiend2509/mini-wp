@@ -20,7 +20,7 @@ module.exports = {
   },
   getFolId (req, res, next) {
     const id = req.loggedUser.id;
-    User.findById(id)
+    User.findById(id).populate('Following')
       .then(user => {
         res.status(200).json({id: user.Following})
       })

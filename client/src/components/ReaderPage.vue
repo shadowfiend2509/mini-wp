@@ -53,12 +53,14 @@
 
 <script>
 import axios from 'axios';
-import swal from 'sweetalert2'
+import swal from 'sweetalert2';
+import io from 'socket.io-client'
 
 export default {
   data () {
     return {
-      articles: null
+      articles: null,
+      socket: io.connect('http://localhost:3000')
     }
   },
   methods: {
@@ -99,6 +101,14 @@ export default {
   },
   created () {
     this.fetchAllArticle()
+
+
+      
+    this.socket.on('createArticle', (data) => {
+      console.log(data)
+      this.articles.unshift(data)
+      data = null
+    })
   }
 }
 </script>

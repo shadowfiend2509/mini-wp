@@ -7,6 +7,14 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import tinymce from 'vue-tinymce-editor'
 
 
+import VueAWN from "vue-awesome-notifications"
+import 'vue-awesome-notifications/dist/styles/style.css'
+
+Vue.use(VueAWN, {
+  durations: {
+    global: 2000
+  }
+})
 
 Vue.component('tinymce', tinymce)
 Vue.use(feather, 'v-icon')
