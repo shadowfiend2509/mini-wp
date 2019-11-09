@@ -38,8 +38,7 @@ module.exports = (err, req, res, next) => {
     res.status(400).json({msg: 'Exp Verify please try again'})
   } else if(err.msg == 'none') {
     res.status(404).json({msg: 'Email not registered!'})
-  }
-  else if(err.errmsg = new RegExp('duplicate', 'i')) {
+  } else if(err.code == 11000 ) {
     res.status(403).json({msg: 'The Email allready used!'})
   }
   else {

@@ -4,8 +4,47 @@ const { signToken } = require('../helpers/jwt');
 const { createVerify, checkVerify } = require('../helpers/logicVerify');
 const { sendMail } = require('../helpers/sendMail');
 const mongoose = require('mongoose');
+const { OAuth2Client } = require('google-auth-library');
 
 module.exports = {
+  signinG (req, res, next) {
+    let username = null;
+    let email = null;
+    const client = new OAuth2Client(process.env.GOOGLE_CLIENTID)
+    client.verifyIdToken({
+      idToken: req.body.id_token,
+      audience: process.env.GOOGLE_CLIENTID
+    })
+      .then(ticket => {
+        const payload = ticket.getPayload()
+        username = payload.name;
+        email = payload.email
+        return User.findOne({ email })
+      })
+      .then(user => {
+        let temp = ''
+        for(let i=0; i<5; i++) {
+          let alfa = 'abeuedwkmsapdmarkqorprqwokqwpo'
+          let rand = Math.floor(Math.random() * alfa.length)
+          temp += alfa[rand]
+        }
+        if(user) {
+          return user
+        } else {
+          return User.create({ username, password: temp, email })
+        }
+      })
+      .then(user => {
+        console.log(user)
+        const serverToken = signToken({
+          id: user._id,
+          email: user.email,
+          username: user.username
+        })
+        res.status(200).json({token: serverToken})
+      })
+      .catch(next)
+  },
   findAllUser (req, res, next) {
     const email = req.loggedUser.email
     User.find()
@@ -17,6 +56,14 @@ module.exports = {
           }
         }
         res.status(200).json(temp);
+      })
+      .catch(next)
+  },
+  getFolId (req, res, next) {
+    const id = req.loggedUser.id;
+    User.findById(id).populate('Following')
+      .then(user => {
+        res.status(200).json({id: user.Following})
       })
       .catch(next)
   },
@@ -111,7 +158,6 @@ module.exports = {
             pass = false
           }
         }
-        console.log(`ini dari pass atas ${pass}`)
         let id = new mongoose.Types.ObjectId(req.loggedUser.id)
         if(!pass) {
           return User.findByIdAndUpdate({ _id }, {$pull: {Followers: id}}, {new: true})
@@ -129,19 +175,19 @@ module.exports = {
         }
       })
       .then((a) => {
-        if(a.Following.length == 0) {
-          res.status(200).json({msg: 'Following Success!'})
+        if(!pass) {
+          res.status(200).json({msg: 'Unfollowing!'})
         } else {
-          res.status(200).json({ msg: 'Unfollowing Success' })
+          res.status(200).json({ msg: 'Following' })
         }
       })
       .catch(next)
   },
   followingStatusTrue (req, res, next) {
     const _id = req.params.id;
+    let pass = true
     User.findById({ _id })
       .then(user => {
-        let pass = true;
         for(let i=0; i<user.RequestIn.length; i++ ) {
           if(user.RequestIn[i] == req.loggedUser.id) {
             pass = false;
@@ -149,30 +195,24 @@ module.exports = {
         }
         let id = new mongoose.Types.ObjectId(req.loggedUser.id)
         if(!pass) {
-          console.log('fist step up')
           return User.findByIdAndUpdate({ _id }, {$pull: {RequestIn: id}})
         } else {
-          console.log('first step down')
           return User.findByIdAndUpdate({ _id }, {$push: {RequestIn: id}})
         }
       })
       .then((a) => {
         const _id = new mongoose.Types.ObjectId(req.loggedUser.id)
         const targetId = new mongoose.Types.ObjectId(req.params.id)
-        if(a.RequestIn.length == 0) {
-          console.log('second step up')
-          return User.findByIdAndUpdate({ _id }, {$push: {RequestOut: targetId}})
-        } else {
-          console.log('second step down')
+        if(!pass) {
           return User.findByIdAndUpdate({ _id }, {$pull: {RequestOut: targetId}})
+        } else {
+          return User.findByIdAndUpdate({ _id }, {$push: {RequestOut: targetId}})
         }
       })
       .then((a) => {
-        if(a.RequestOut.length == 0) {
-          console.log('third step up')
+        if(pass) {
           res.status(200).json({msg: 'Your request has been sent!'})
         } else {
-          console.log('thrid step down')
           res.status(200).json({msg: 'Your request has been canceled!'})
         }
       })
@@ -180,12 +220,14 @@ module.exports = {
   },
   acceptRequest (req, res, next) {
     const _id = req.loggedUser.id;
-    const targetId = new mongoose.Types.ObjectId(req.params.id)
+    const targetId = new mongoose.Types.ObjectId(req.params.id);
+    let tempUser = null
     User.findByIdAndUpdate({ _id }, {$pull: {RequestIn: targetId}})
       .then(() =>{
-        return User.findByIdAndUpdate({ _id }, {$push: {Followers: targetId}})
+        return User.findByIdAndUpdate({ _id }, {$push: {Followers: targetId}}, {new: true})
       })
-      .then(() => {
+      .then((user) => {
+        tempUser = user
         let incomingId = new mongoose.Types.ObjectId(req.loggedUser.id)
         return User.findByIdAndUpdate({ _id: targetId}, {$pull: {RequestOut: incomingId}})
       })
@@ -194,7 +236,7 @@ module.exports = {
         return User.findByIdAndUpdate({ _id: targetId}, {$push: {Following: incomingId}})
       })
       .then(() => {
-        res.status(200).json({msg: 'accepted!'})
+        res.status(200).json({msg: 'accepted!', user: tempUser})
       })
       .catch(next)
   },
@@ -204,10 +246,10 @@ module.exports = {
     User.findByIdAndUpdate(_id, {$pull: {RequestIn: targetId}})
       .then(() => {
         let id = new mongoose.Types.ObjectId(req.loggedUser.id)
-        return User.findByIdAndUpdate({ _id: req.params.id }, {$pull: {RequestOut: id}})
+        return User.findByIdAndUpdate({ _id: req.params.id }, {$pull: {RequestOut: id}}, {new: true})
       })
-      .then(() => {
-        res.status(200).json({msg: 'Decline the Request'})
+      .then((user) => {
+        res.status(200).json({msg: 'Decline the Request', user})
       })
       .catch(next)
   },

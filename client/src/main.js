@@ -9,6 +9,8 @@ import tinymce from 'vue-tinymce-editor'
 
 import VueAWN from "vue-awesome-notifications"
 import 'vue-awesome-notifications/dist/styles/style.css'
+import GSignInButton from 'vue-google-signin-button'
+Vue.use(GSignInButton)
 
 Vue.use(VueAWN, {
   durations: {

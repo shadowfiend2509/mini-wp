@@ -18,10 +18,7 @@
         </b-col>
         <b-col>
           <div class='angkanotif'>{{ notif }}</div>
-          <button type="button" class="btn btn-outline-light btn-lg site-btns"><v-icon class='ihome' name='bell'></v-icon></button>
-        </b-col>
-        <b-col>
-          <button type="button" class="btn btn-outline-light btn-lg site-btns"><v-icon class='ihome' name='user'></v-icon></button>
+          <button type="button" class="btn btn-outline-light btn-lg site-btns" @click='sendPageToSibling("profile")'><v-icon class='ihome' name='bell'></v-icon></button>
         </b-col>
         <b-col>
           <button type="button" class="btn btn-outline-light btn-lg site-btns" @click='signout("home")'><v-icon class='ihome' name='power'></v-icon></button>
@@ -51,6 +48,9 @@ export default {
     },
     goToDash () {
       this.$emit('go-dash', "mySite")
+    },
+    sendPageToSibling (name) {
+      this.$emit('go-sibling', { name, target: 'Request'})
     }
   }
 }

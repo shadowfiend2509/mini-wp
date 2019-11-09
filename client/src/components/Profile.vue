@@ -16,11 +16,6 @@
           <PageProfile :get-profile='user'/>
         </div>
 
-        <!-- Setting Profile -->
-
-        <div v-else-if='pageLocal == "setting"'>
-          Setting
-        </div>
 
         <!-- Manage Profile --> 
 
@@ -28,6 +23,14 @@
           <ManageProfile :get-user='getUser'/>
         </div>
 
+        <!-- Request Profile -->
+
+        <div v-else-if='pageLocal == "request"' class="request">
+          <RequestProfile
+            :get-user='getUser'
+            @change-data='okechange'
+            />
+        </div>
 
       </div>
     </div>
@@ -37,13 +40,13 @@
 <script>
 import PageProfile from './LocalProfile/PageProfile'
 import ManageProfile from './LocalProfile/ManageProfile'
+import RequestProfile from './LocalProfile/RequestProfile'
 
 export default {
   data () {
     return {
       profiles: [
         { icon: 'minimize', click: 'profile', name: 'Profile' },
-        { icon: 'settings', click: 'setting', name: 'Setting' },
         { icon: 'monitor', click: 'manage', name: 'Monitoring' },
         { icon: 'git-pull-request', click: 'request', name: 'Request' }
       ],
@@ -53,17 +56,36 @@ export default {
   },
   components: {
     PageProfile,
-    ManageProfile
+    ManageProfile,
+    RequestProfile
   },
-  props: ['getUser'],
+  props: ['getUser', 'sibling'],
   methods: {
     changeLocal (name) {
       this.pageLocal = name
+    },
+    okechange (data) {
+      this.getUser = data
     }
   },
   created () {
-    this.user = this.getUser
-    this.pageLocal = 'profile'
+    if(this.sibling !== null){
+      this.pageLocal = this.sibling
+      this.user = this.getUser;
+      } else {
+      this.user = this.getUser
+      this.pageLocal = 'profile'
+    }
+  },
+  watch: {
+    getUser: {
+      handler(val) {
+        if(val) {
+          this.getUser = val;
+          this.user = val
+        }
+      }
+    }
   }
 }
 </script>
@@ -72,6 +94,10 @@ export default {
 #cusCon {
   padding: 20px;
   width: 110vh;
-  height: 80vh;
+  height: 82vh;
+}
+.custCol {
+  height: 82vh;
+  overflow: auto;
 }
 </style>

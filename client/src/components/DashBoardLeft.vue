@@ -41,15 +41,13 @@ export default {
     return {
       streams: [
         { icon: 'more-horizontal', name: 'Public Site', click: 'public' },
-        { icon: 'check-circle', name: 'Followed Site', click: '' },
+        { icon: 'check-circle', name: 'Followed Site', click: 'followed' },
         { icon: 'users', name: 'Find Friends', click: 'globalUser' },
-        { icon: 'message-circle', name: 'Chat', click: 'chatRoom' },
-        { icon: 'check-circle', name: 'Followed Site', click: '' },
+        { icon: 'message-circle', name: 'Chat', click: 'chatRoom' }
       ],
       manages: [
         { iconM: 'minimize', nameM: 'Site Pages', clickM: 'mySite' },
         { iconM: 'settings', nameM: 'Profile', clickM: 'profile' },
-        { iconM: '', nameM: 'Testimonials', clickM: 'mySite' }
       ],
       collaps: [
         { link: 'http://started.dreamcarofficial.com', nameC: 'E-Commerce' },

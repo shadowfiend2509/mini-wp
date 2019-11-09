@@ -6,6 +6,7 @@
       <NavBarLogin 
         :notif='notif'
         @change-page='sendPageToParent'
+        @go-sibling='sendPageSibling'
         />
     </div>
   <div id='loading' v-if='isloader'>
@@ -62,7 +63,7 @@
                     <div class="cardd">
                       <div class='card-texts col-8'>
                         <div id='titledesc'>
-                          <p id='titlee'> {{ article.title }} </p>
+                          <p id='titlee' @click='sendtoReadPage(article._id)'> {{ article.title }} </p>
                         </div>
                         <div id='trigbtn'>
                         </div>
@@ -75,7 +76,7 @@
                           <div class='btntgls'>
                               <button class="btn btn-outline-primary" disabled><v-icon class='ticon' name='thumbs-up'></v-icon> {{ article.Likes.length }}</button>
                             <div v-if='open && target == article._id' :style='tran'>
-                              <button class="btn btn-outline-info"><v-icon class='ticon' name='edit'></v-icon>Edit</button>
+                              <button class="btn btn-outline-info" @click='editArticle(article)'><v-icon class='ticon' name='edit'></v-icon>Edit</button>
                               <button class="btn btn-outline-danger" @click='deleteArticle(article._id)'><v-icon class='ticon' name='trash-2'></v-icon>Delete</button>
                             </div>
                             <button class="btn btn-outline-danger" @click='toggle(article._id)'><v-icon class='ticon' name='skip-back'></v-icon></button>
@@ -96,7 +97,18 @@
                 <div class="dashHead" v-else-if='name == "public"'>
                   <ReaderPage 
                     @change-page='sendPage'
+                    @changeforarticle='changePageGetId'
+                    @send-tag='searchTag'
                   />
+                </div>
+
+
+                <!-- Followed Page -->
+
+                <div class="dashHead" v-else-if='name == "followed"'>
+                  <Followed
+
+                    />
                 </div>
 
 
@@ -110,15 +122,28 @@
                 <!-- Tags Page -->
 
                 <div class="dashHead" v-else-if='name == "tags"'>
-                  <Tag :get-tag='searchTagName' @change-page='sendPage'/>
+                  <Tag :get-tag='searchTagName' @change-page='sendPage' @changetoreadpage='changePageGetId' @to-grand-parent='gotoPage'/>
                 </div>
 
 
                 <!-- Profile Page -->
 
                 <div class='dashHead' v-else-if='name == "profile"'>
-                  <Profile :get-user='getUser' />
+                  <Profile :get-user='getUser' :sibling='forSibling'/>
                 </div>
+
+
+                <!-- Edit Page -->
+
+                <div class='dashHead' v-else-if='name == "editPage"'>
+                  <EditArticle 
+                    :article='forEdit'
+                    @back-fetch='returnAndFetch'
+                    />
+                </div>
+
+
+
 
             </div>
         </div>
@@ -134,11 +159,13 @@
 
 <script>
 import Loading from '../components/Loading'
+import Followed from '../components/Followed'
 import DashBoardLeft from '../components/DashBoardLeft'
 import Chat from '../components/RoomChat'
 import ReaderPage from '../components/ReaderPage'
 import Profile from '../components/Profile'
 import GlobalUser from '../components/GlobalUser'
+import EditArticle from '../components/EditArticle'
 import Tag from '../components/Tag'
 import swal from 'sweetalert2'
 import axios from 'axios'
@@ -156,21 +183,41 @@ export default {
       name: null,
       searchTagName: null,
       tran: null,
-      socket: io.connect('http://localhost:3000')
+      socket: io.connect('http://localhost:3000'),
+      forEdit: null,
+      forSibling: null
     }
   },
   components: {
     Loading,
+    EditArticle,
     Profile,
     DashBoardLeft,
     ReaderPage,
     Tag,
     Chat,
     NavBarLogin,
-    GlobalUser
+    GlobalUser,
+    Followed
   },
-  props: ['getUser', 'getArticle', 'isloading', 'notif', 'promiseArticle'],
+  props: ['getUser', 'getArticle', 'isloading', 'notif', 'promiseArticle', 'tagFromSibling'],
   methods: {
+    sendPageSibling (payload) {
+      this.name = payload.name;
+      this.forSibling = payload.target
+    },
+    sendtoReadPage (id) {
+      this.$emit('send-to-read-page', id)
+    },
+    returnAndFetch () {
+      this.$awn.success('update success')
+      this.name = 'mySite';
+      this.$emit('fetch-data')
+      this.fetchingData()
+    },
+    changePageGetId (id) {
+      this.$emit('send-page-with-id', id)
+    },
     searchTag (name) {
       this.searchTagName = name
       this.name = 'tags'
@@ -183,6 +230,10 @@ export default {
     },
     sendPage (name) {
       this.name = name
+    },
+    editArticle (article) {
+      this.name = 'editPage';
+      this.forEdit = article
     },
     sendPageToParent (name) {
       this.$emit('change-page', name)
@@ -243,7 +294,11 @@ export default {
   },
   created () {
     this.fetchingData()
-    this.name = 'mySite'
+    this.name = 'public'
+    if(this.tagFromSibling){
+      this.name = 'tags';
+      this.searchTagName = this.tagFromSibling
+    }
   }
 }
 </script>

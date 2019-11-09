@@ -3,7 +3,7 @@
                   
     <div class="section-head border">
       <ul>
-        <li>Public Site</li>
+        <li>Public Site <a id='cicle'>{{ articles.length }}</a></li>
       </ul>
     </div>
 
@@ -19,39 +19,19 @@
     </div>
 
     <div class="section-head3 border" v-for='(article, i) in articles' :key='i'>
-      <div class="cardd">
-        <div class='card-texts col-8'>
-          <div id='titledesc'>
-            <p id='titlee'>{{ article.title }}</p>
-          </div>
-          <div id='trigbtn'>
-            <div id="profille">
-              <a href='#' class='nameAuthor btn-outline-primary btn'> <v-icon name='user' class='ticon'></v-icon> &nbsp; {{ article.Author.username.toUpperCase() }}</a>
-            </div>
-          </div>
-          <div id='tagss'>
-            <div>
-              <ul>
-                <li v-for='(tag, i) in article.tags' :key='i'>  <b-badge href="#" class='taggs'>{{ tag }}</b-badge> &nbsp; </li>
-              </ul>
-            </div>
-            <div class='btntgls'>
-              <button class="btn btn-outline-primary" @click='likeArticle(article._id)'>
-                <v-icon class='ticon' name='thumbs-up'></v-icon> {{ article.Likes.length }} Likes
-              </button>
-            </div>
-          </div>
-        </div>
-        <div class='card-imgs col-4'>
-          <img :src='article.featured_image' style='width:320px'>
-        </div>
-      </div>
+      <CardComponent 
+        :get-article='article'
+        @like-click='likeArticle'
+        @change-page='sendReadOneArticle'
+        @send-tag='sendTag'
+        />
     </div>
 
   </div>
 </template>
 
 <script>
+import CardComponent from "./CardComponent"
 import axios from 'axios';
 import swal from 'sweetalert2';
 import io from 'socket.io-client'
@@ -59,11 +39,17 @@ import io from 'socket.io-client'
 export default {
   data () {
     return {
-      articles: null,
+      articles: '',
       socket: io.connect('http://localhost:3000')
     }
   },
+  components: {
+    CardComponent
+  },
   methods: {
+    sendTag (name) {
+      this.$emit('send-tag', name);
+    },
     likeArticle (id) {
       axios({
         method: 'patch',
@@ -74,40 +60,62 @@ export default {
       })
         .then(({data}) => {
           this.fetchAllArticle()
+            .then(data => {
+              this.articles = data
+            })
+            .catch(err => {
+              this.$awn.warning(err.response.data.msg)
+            })
         })
         .catch(err => {
-          console.log(err)
+          this.$awn.warning(err.response.data.msg)
         })
     },
     fetchAllArticle () {
-      axios({
-        method: 'get',
-        url: 'http://localhost:3000/articles/public'
-      })
-        .then(({data}) => {
-          this.articles = data
-          console.log(this.articles)
+      return new Promise((resolve, reject) => {
+        axios({
+          method: 'get',
+          url: 'http://localhost:3000/articles/public',
+          headers: {
+            token: localStorage.getItem('token')
+          }
         })
-        .catch(err => {
-          swal.fire({
-            type: 'warning',
-            title: err.response.data.msg
+          .then(({data}) => {
+            resolve(data)
           })
-        })
+          .catch(err => {
+            swal.fire({
+              type: 'warning',
+              title: err.response.data.msg
+            })
+            reject(err)
+          })
+      })
     },
     sendPage (name) {
       this.$emit('change-page', name)
+    },
+    sendReadOneArticle (id) {
+      this.$emit('changeforarticle', id)
     }
   },
   created () {
     this.fetchAllArticle()
+      .then(data => {
+        this.articles = data;
+      })
+      .catch(err => {
+        this.$awn.warning(err.response.data.msg)
+      })
+    console.log(this.articles)
 
-
-      
     this.socket.on('createArticle', (data) => {
-      console.log(data)
-      this.articles.unshift(data)
-      data = null
+      if(!data.Author.status) {
+        this.articles.unshift(data)
+        data = null
+      } else {
+        data = null
+      }
     })
   }
 }

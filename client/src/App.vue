@@ -12,9 +12,12 @@
         :promise-article='articleLogin'
         :notif='notification'
         @change-page='gotPageFromChild'
-        @fetch-reload='reloadPage'
         @backHome='backhome'
         @delete-article='deleteArticle'
+        @send-page-with-id='changePageWithId'
+        :tag-from-sibling='gotTagArticle'
+        @fetch-data='deleteArticle'
+        @send-to-read-page='changePageWithId'
       />
     </div>
   </div>
@@ -28,6 +31,13 @@
       />
   </div>
 
+  <div id="readPage" v-else-if='page == "readPage" && !isloader'>
+    <ReadPage
+      :get-id='gotIdArticle'
+      @change-page='gotPageFromChild'
+      @search-tag='findTag'
+      />
+  </div>
 
   <!-- Home Page without Login -->
 
@@ -74,7 +84,7 @@ import Home from './Views/Home'
 import SignIn from './Views/SignIn'
 import SignUp from './Views/SignUp'
 import Reset from './Views/Reset'
-import NavBarLogin from './components/NavBarLogin'
+import ReadPage from './Views/ReadPage'
 import swal from 'sweetalert2'
 import axios from 'axios'
 
@@ -94,30 +104,30 @@ export default {
       notification: 0,
 
       socket: io.connect('http://localhost:3000'),
-      pageDash: null
+      pageDash: null,
+
+      gotIdArticle: null,
+      gotTagArticle: null
     }
   },
   components: {
-    NavBarLogin,
     Home,
     SignIn,
     DashBoard,
     SignUp,
     Reset,
     CreateArticle,
+    ReadPage
   },
   methods: {
-    reloadPage () {
-      console.lost('reload in')
-      this.articleLogin()
-        .then(data => {
-        })
-        .catch(err => {
-          swal.fire({
-            position: 'top-end',
-            title: err.msg
-          })
-        })
+    findTag (name) {
+      console.log(`app ${name}`)
+      this.gotTagArticle = name;
+      this.page = 'mainPage'
+    },
+    changePageWithId (id) {
+      this.page = 'readPage'
+      this.gotIdArticle = id
     },
     changeAndUpdate (article) {
       this.article.unshift(article);
@@ -192,16 +202,12 @@ export default {
       })
     },
     getNotification () {
-      this.notification += this.user.Following.length
       this.notification += this.user.RequestIn.length
     },
     deleteArticle () {
-      console.log('triger delete app')
       this.articleLogin()
         .then(data => {
-          console.log(data)
           this.article = data;
-          console.log(this.article)
         })
         .catch(err => {
           this.$awn.warning(err.response.data.msg)
@@ -219,7 +225,7 @@ export default {
           setTimeout(() => {
             this.getNotification()
             this.$awn.info(`You have ${this.notification} Notification`)            
-          }, 2000);
+          }, 4000);
         })
         .catch(err => {
           swal.fire({

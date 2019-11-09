@@ -13,7 +13,7 @@
           Posts 
         </div>
         <div class='btnps'>
-          <button class="btnpost btn" @click='sendPage("makeArticle")'>Create New Post</button>
+          <button class="btnpost btn" @click='sendPagetoGrandParent("makeArticle")'>Create New Post</button>
         </div>
       </div>
     </div>
@@ -22,7 +22,7 @@
       <div class="cardd">
         <div class='card-texts col-8'>
           <div id='titledesc'>
-            <p id='titlee'>{{ article.title }}</p>
+            <p id='titlee' @click='changeforArticle(article._id)'>{{ article.title }}</p>
           </div>
           <div id='trigbtn'>
             <div id="profille">
@@ -31,11 +31,11 @@
             <div class="space">
               <div class='btntgls'>
                 <ul>
-                  <li v-for='(tag, i) in article.tags' :key='i'>  <b-badge href="#" class='taggs'> {{ tag }}</b-badge> &nbsp;</li>
+                  <li v-for='(tag, i) in article.tags' :key='i'>  <b-badge href="#" class='taggs' @click='searchTagAgain(tag)'> {{ tag }}</b-badge> &nbsp;</li>
                 </ul>
               </div>
               <div class='imbtn'>
-                <button class="btn btn-outline-primary mt-4" ><v-icon class='ticon' name='thumbs-up'></v-icon> {{ article.Likes.length }}  Likes</button>
+                <button class="btn btn-outline-primary mt-4" @click='likeArticle(article._id)'><v-icon class='ticon' name='thumbs-up'></v-icon> {{ article.Likes.length }}  Likes</button>
               </div>
             </div>
           </div>
@@ -61,8 +61,27 @@ export default {
   },
   props: ['getTag'],
   methods: {
+    likeArticle (id) {
+      axios({
+        method: "patch",
+        url: `http://localhost:3000/articles/${id}`,
+        headers: {
+          token: localStorage.getItem('token')
+        }
+      })
+        .then(({data}) => {
+          this.gotTemp()
+        })
+        .catch(err => {
+          this.$awn.warning(err.response.data.msg)
+        })
+    },
     sendPage (name) {
       this.$emit('change-page', name)
+    },
+    searchTagAgain (name) {
+      this.getTag = name
+      this.gotTemp()
     },
     gotTemp () {
       const name = this.getTag;
@@ -94,6 +113,12 @@ export default {
             reject(err)
           })
       })
+    },
+    changeforArticle (id) {
+      this.$emit('changetoreadpage', id)
+    },
+    sendPagetoGrandParent (name) {
+      this.$emit('to-grand-parent', name)
     }
   },
   created () {

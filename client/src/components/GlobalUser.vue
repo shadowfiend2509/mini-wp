@@ -5,6 +5,7 @@
         <UsersComponent 
           :get-user='user'
           :get-login-user='dataLogin'
+          @reload-users='reloadPage'
         ></UsersComponent>
       </div>
     </div>
@@ -26,6 +27,15 @@ export default {
     UsersComponent
   },
   methods: {
+    reloadPage (msg) {
+      this.fetchUsers()
+        .then(() => {
+          this.$awn.success(msg)
+        })
+        .catch(err => {
+          this.$awn.warning(err)
+        })
+    },
     fetchUsers () {
       return new Promise ((resolve, reject) => {
         axios({
@@ -83,14 +93,14 @@ export default {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background: #fbfbfb;
+  background: #E6E6E6;
 }
 .profile {
   margin-left: 15px;
   margin-top: 15px;
   background-color: #B9BBB7;
   width: 30%;
-  height: 380px;
+  height: 400px;
   background-repeat: no-repeat;
   background-size: cover;
   background-color:#444;

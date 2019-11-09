@@ -11,7 +11,8 @@ const errorHandler = require('./middlewares/errorHandler');
 const app = express();
 const http = require('http').createServer(app);
 const PORT = process.env.PORT || 3000;
-const Article = require('./models/article')
+const Article = require('./models/article');
+const cron = require('./helpers/cron');
 const io = require('socket.io')(http);
 
 app.use(cors());
@@ -52,4 +53,4 @@ function getArticle (id) {
   })
 }
 
-http.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
+http.listen(PORT, cron, () => console.log(`Listening on PORT ${PORT}`));

@@ -16,7 +16,14 @@
           <div style='border-bottom: 1px; border-top: 1px'>
             <center>OR</center>
           </div>
-          <p><input type='button' class='g-signin2' data-onsuccess='onSignIn' value='Google Sign In'></p>
+          <p>
+            <g-signin-button
+              :params="googleSignInParams"
+              @success="onSignInSuccess"
+              @error="onSignInError">
+              Sign in with Google
+            </g-signin-button>
+          </p>
           <div class="link-home">
             <p><a href='#' @click='sendPage("signup")'>Don't have an account?</a></p>
             <p style='color:red' id='forgot' @click='sendPage("reset")'>Forgot Password?</p>
@@ -41,7 +48,10 @@ export default {
     return {
       baseUrl: `http://localhost:3000`,
       inemail: '',
-      inpassword: ''
+      inpassword: '',
+      googleSignInParams: {
+        client_id: '712137348260-44kc3nhpmtnrluo2b1g5anfbmk2pku50.apps.googleusercontent.com'
+      }
     }
   },
   components: {
@@ -51,40 +61,74 @@ export default {
     sendPage(name) {
       this.$emit('change-page', name)
     },
-    signin() {
+    onSingInSuccess(googleUser){ 
+      const id_token = googleUser.getAuthResponse().id_token;
       axios({
         method: 'post',
-        url: `${this.baseUrl}/users/signin`,
-        data: {
-          signuser: this.inemail,
-          password: this.inpassword
-        }
+        url: `${this.baseUrl}/users/signinG`,
+        data: { id_token }
       })
         .then(({data}) => {
-          swal.fire({
-            position: 'top-end',
-            icon: 'success',
-            title: 'You Online Now',
-            showConfirmButton: false,
-            timer: 1500
-          })
-          this.$emit('success-signin')
           localStorage.setItem('token', data.token)
-          this.inemail ='';
-          this.inpassword = ''
+          this.$emit('success-signin')
         })
         .catch(err => {
-          swal.fire({
-            type: 'warning',
-            title: err.response.data.msg
+          this.$awn.warning(err.response.data.msg)
+        })
+    },
+    onSignInError (error) {
+      // `error` contains any error occurred.
+      console.log('OH NOES', error)
+    },
+    signin() {
+      this.$awn.asyncBlock(
+        this.singinProcess(),
+        'Welcome Back!',
+        null,
+        'Loading'
+      )
+    },
+    singinProcess () {
+      return new Promise ((resolve, reject) => {
+        axios({
+          method: 'post',
+          url: `${this.baseUrl}/users/signin`,
+          data: {
+            signuser: this.inemail,
+            password: this.inpassword
+          }
+        })
+          .then(({data}) => {
+            this.$emit('success-signin')
+            localStorage.setItem('token', data.token)
+            this.inemail ='';
+            this.inpassword = ''
+            resolve()
           })
-        });
+          .catch(err => {
+            swal.fire({
+              type: 'warning',
+              title: err.response.data.msg
+            })
+            reject(err)
+          });
+      })
     }
   }
 }
 </script>
 
 <style>
+.g-signin-button {
+  /* This is where you control how the button looks. Be creative! */
+  display: flex;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background-color: #3c82f7;
+  color: #fff;
+  box-shadow: 0 3px 0 #0f69ff;
+}
 #forgot {
   cursor: pointer;
 }

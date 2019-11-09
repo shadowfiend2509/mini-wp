@@ -3,10 +3,24 @@ const User = require('../models/user');
 
 
 module.exports = {
+  getOneArticle (req, res, next) {
+    const id = req.params.id;
+    Article.findById(id).populate('Author')
+      .then(article => {
+        res.status(200).json(article)
+      })
+      .catch(next)
+  },
   getPublicArticle (req, res, next) {
     Article.find().populate("Author").sort([['createdAt', 'descending']])
       .then(articles => {
-        res.status(200).json(articles)
+        let temp = []
+        for(let i=0; i<articles.length; i++) {
+          if(!articles[i].Author.status) {
+            temp.push(articles[i])
+          }
+        }
+        res.status(200).json(temp)
       })
       .catch(next)
   },
@@ -18,30 +32,23 @@ module.exports = {
       })
       .catch(next)
   },
-  getFolId (req, res, next) {
-    const id = req.loggedUser.id;
-    User.findById(id).populate('Following')
-      .then(user => {
-        res.status(200).json({id: user.Following})
-      })
-      .catch(next)
-  },
   getFolArticle (req, res, next) {
     const Author = req.params.id;
-    Article.find({ Author })
+    Article.find({ Author }).populate('Author')
       .then(articles => {
+
         res.status(200).json(articles)
       })
       .catch(next)
   },
   updateArticle (req, res, next) {
     const _id = req.params.id;
-    const { title, content } = req.body;
+    const { title, content, tags } = req.body;
     if(!title, !content) throw {msg: 'empty'} 
     else {
-      Article.findByIdAndUpdate({ _id }, { title, content })  
-        .then(() => {
-          res.status(201).json({msg: 'success updated'})
+      Article.findByIdAndUpdate({ _id }, { title, content, tags }, {new: true})  
+        .then((article) => {
+          res.status(201).json(article)
         })
         .catch(next);
     }
@@ -105,7 +112,7 @@ module.exports = {
         articles.forEach((el, i) => {
           console.log(el.tags)
           for(let i=0; i<el.tags.length; i++) {
-            if(el.tags[i] == tag) {
+            if(el.tags[i] == tag && !el.Author.status) {
               temp.push(el)
             }
           }

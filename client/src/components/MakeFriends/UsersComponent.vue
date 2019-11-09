@@ -13,7 +13,7 @@
       </div>
       <div class="card-body profileBody">
         <div class="profilePic">
-          <img class="avatar" :src="getUser.image" alt="Username">
+          <a :href='getUser.image' target="_"><img class="avatar" :src="getUser.image" alt="Username"></a>
         </div>
         <div class="profileInfo">
           <div class='fol'>
@@ -35,20 +35,15 @@
         </div>
       </div>
       <div class="card-footer actions">
-        <div class="actionFirst" @click='actionFolPublic(getUser._id)' v-if='!privatee && isLike'>
+        <div class="actionFirst" @click='actionFolPublic(getUser._id)' v-if='!privatee'>
           <svg width="24" height="24" viewBox="0 0 24 24">
-            <v-icon name='user-plus' class='users'></v-icon>
-          </svg>  &nbsp; {{ messageFol }}
+            <v-icon :name='statusFol.iconFol' class='users'></v-icon>
+          </svg>  &nbsp; {{ statusFol.messageFol }}
         </div>
-        <div class="actionFirst" @click='actionFolPrivate(getUser._id)' v-else-if='privatee && isLike'>
+        <div class="actionFirst" @click='actionFolPrivate(getUser._id)' v-else-if='privatee'>
           <svg width="24" height="24" viewBox="0 0 24 24">
-            <v-icon name='user-plus' class='users'></v-icon>
-          </svg>  &nbsp; {{ messageFol }} <v-icon name='lock' class='lock'></v-icon>
-        </div>
-        <div class="actionFirst" @click='actionFol(getUser._id)' v-else-if='!isLike'>
-          <svg width="24" height="24" viewBox="0 0 24 24">
-            <v-icon name='user-minus' class='users'></v-icon>
-          </svg>  &nbsp; UnFollow
+            <v-icon :name='statusFol.isPrivate.iconPrivate' class='users'></v-icon>
+          </svg>  &nbsp; {{ statusFol.isPrivate.messagePrivate }}
         </div>
         <div class="actionSecond" v-if='!privatee'>
           <svg width="24" height="24" viewBox="0 0 24 24">
@@ -67,25 +62,90 @@ export default {
     return {
       getColor: `card-header profileName bg-${this.getUser.color}`,
       privatee: null,
-      isLike: null,
-      messageFol: 'Follow'
+      statusFol: {
+        messageFol: null,
+        iconFol: null,
+        isPrivate: {
+          messagePrivate: null,
+          iconPrivate: null
+        }
+      }
     }
   },
   props: ['getUser', 'getLoginUser'],
   methods: {
+    actionFolPrivate (id) {
+      this.statusFol.isPrivate.iconPrivate = ''
+      axios({
+        method: 'patch',
+        url: `http://localhost:3000/users/status/private/${id}`,
+        headers: {
+          token: localStorage.getItem('token')
+        }
+      })
+        .then(({data}) => {
+          this.$emit('reload-users', data.msg);
+          if(this.statusFol.isPrivate.messagePrivate == 'Private') {
+            this.statusFol.isPrivate.messagePrivate = 'Request';
+            this.statusFol.isPrivate.iconPrivate = 'refresh-ccw';
+          } else {
+            this.statusFol.isPrivate.messagePrivate = 'Private';
+            this.statusFol.isPrivate.iconPrivate = 'lock'
+          }
+        })
+        .catch(err => {
+          this.$awn.warning(err.response.data.msg)
+        })
+    },
     actionFolPublic (id) {
       axios({
-        mehtod: 'patch',
-        url: `http://localhost:3000/`
+        method: 'patch',
+        url: `http://localhost:3000/users/status/public/${id}`,
+        headers: {
+          token: localStorage.getItem('token')
+        }
       })
+        .then(({data}) => {
+          this.$emit('reload-users', data.msg)
+          if(this.statusFol.messageFol == 'Follow'){
+            this.statusFol.messageFol = 'Unfollow';
+            this.statusFol.iconFol = 'user-minus'
+          } else {
+            this.statusFol.messageFol = 'Follow';
+            this.statusFol.iconFol = 'user-plus'
+          }
+          setTimeout(() => {
+            this.checkStatus()
+          }, 3000);
+        })
+        .catch(err => {
+          this.$awn.warning(err.response)
+        })
     },
     checkPossible () {
-      let pass = true;
+      let pass = false;
       for(let i=0; i<this.getUser.Followers.length; i++) {
-        if(this.getUser.Followers[i] == this.getLoginUser) pass = false;
+        if(this.getUser.Followers[i] == this.getLoginUser._id) pass = true;
       }
-      console.log(pass)
-      this.isLike = pass;
+      if(!pass) {
+        this.statusFol.messageFol = 'Follow';
+        this.statusFol.iconFol = 'user-plus';
+      } else{
+        this.statusFol.messageFol = 'Unfollow';
+        this.statusFol.iconFol = 'user-minus';
+        this.privatee = false;
+      } 
+      let pasRequest = false;
+      for(let i=0; i<this.getUser.RequestIn.length; i++) {
+        if(this.getUser.RequestIn[i] == this.getLoginUser._id) pasRequest = true;
+      }
+      if(!pasRequest) {
+        this.statusFol.isPrivate.messagePrivate = 'Private';
+        this.statusFol.isPrivate.iconPrivate = 'lock';
+      } else {
+        this.statusFol.isPrivate.messagePrivate = 'Request';
+        this.statusFol.isPrivate.iconPrivate = 'refresh-ccw'
+      }
     },
     checkStatus () {
       const id = this.getUser._id;
@@ -99,7 +159,8 @@ export default {
         .then(({data}) => {
           this.privatee = data.status;
           if(this.privatee) {
-            this.messageFol = 'Private'
+            this.statusFol.isPrivate.messagePrivate = 'Private'
+            this.statusFol.isPrivate.iconPrivate = 'lock'
           }
         })
         .catch(err => {
@@ -108,8 +169,10 @@ export default {
     }
   },
   created () {
-    this.checkPossible()
     this.checkStatus()
+    setTimeout(() => {
+      this.checkPossible()
+    }, 1000);
   }
 }
 </script>
@@ -153,6 +216,8 @@ export default {
 }
 .profilePic {
   text-align:center;
+  margin-top: -35px;
+  height: 180px
 }
 .isOnline {
   text-align:center;

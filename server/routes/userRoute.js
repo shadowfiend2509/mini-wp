@@ -15,6 +15,7 @@ Route.use(authentication)
 Route.get('/', userCont.findAllUser);
 Route.get('/find/login', userCont.getLoginProfile);
 Route.get('/:id', userCont.getProfileUser);
+Route.get('/getId/fol', userCont.getFolId);
 
 Route.get('/status/:id', userCont.checkPrivate);
 Route.patch('/change/status', userCont.changeStatus);

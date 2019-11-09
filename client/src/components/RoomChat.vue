@@ -15,7 +15,7 @@
   <div class="border">
     <form id="btm" @submit.prevent='sendMessage()'>
       <div class="inputBox col-10 mt-3">
-        <input type="text" id="inpuText" v-model='newMsg' placeholder="message.." style='width: 100%; height: 40px'>
+        <input type="text" id="inpuText" v-model='newMsg' placeholder="All messages will be reset once a day.." style='text-align: center;width: 100%; height: 40px'>
       </div>
       <div class="btnsend col-2">
         <button type="submit" class="btn btn-outline-primary btn-md mt-3"><v-icon name='send' class='iconn'></v-icon> &nbsp; Send</button>
@@ -52,7 +52,6 @@ export default {
         }
       })
         .then(({data}) => {
-          // this.messages.unshift(data.msg);
           this.socket.emit('send', data.msg)
           data.msg = null
           this.newMsg = ''
