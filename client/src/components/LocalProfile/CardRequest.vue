@@ -26,7 +26,6 @@ export default {
   props: ['getUser'],
   methods: {
     accept (id) {
-      console.log(id)
       this.$emit('response-accept', id)
     },
     decline (id) {
@@ -34,7 +33,6 @@ export default {
     }
   },
   created () {
-    console.log(this.getUser)
     if(this.getUser == null) {
       console.log('kosong')
     } else {

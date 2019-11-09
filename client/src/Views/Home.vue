@@ -28,7 +28,7 @@
         </div>
       </div>
       <div class="homeFoot">
-        <img src="https://storage.cloud.google.com/newminiwp/wordpress-wallpaper.png?authuser=1&folder&organizationId" alt="img">
+        <img src="https://storage.cloud.google.com/newminiwp/wordpress-wallpaper.png?authuser=1" alt="img">
       </div>
     </div>
   </b-container>
@@ -58,11 +58,10 @@ export default {
       return new Promise ((resolve, reject) => {
         axios({
           method: 'get',
-          url: 'http://localhost:3000/quote'
+          url: 'http://wpserver.dreamcarofficial.com/quote'
         })
           .then(({data}) => {
             this.quote = data
-            console.log(data)
             resolve()
           })
           .catch(reject)

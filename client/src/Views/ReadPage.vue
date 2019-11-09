@@ -74,7 +74,7 @@ export default {
       return new Promise ((resolve, reject) => {
         axios({
           method: 'get',
-          url: `http://localhost:3000/articles/one/${id}`,
+          url: `http://wpserver.dreamcarofficial.com/articles/one/${id}`,
           headers: {
             token: localStorage.getItem('token')
           }
@@ -90,7 +90,6 @@ export default {
       this.$emit('change-page', name)
     },
     searchTag (name) {
-      console.log(`readPage ${name}`)
       this.$emit('search-tag', name)
     }
   },

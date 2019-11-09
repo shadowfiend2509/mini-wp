@@ -64,7 +64,7 @@ export default {
     likeArticle (id) {
       axios({
         method: "patch",
-        url: `http://localhost:3000/articles/${id}`,
+        url: `http://wpserver.dreamcarofficial.com/articles/${id}`,
         headers: {
           token: localStorage.getItem('token')
         }
@@ -87,7 +87,6 @@ export default {
       const name = this.getTag;
       this.searchTag (name) 
         .then(data => {
-          console.log(data)
           this.results = data;
         })
         .catch(err => {
@@ -101,7 +100,7 @@ export default {
       return new Promise ((resolve, reject) => {
         axios({
           method: 'get',
-          url: `http://localhost:3000/articles/tag/${name}`,
+          url: `http://wpserver.dreamcarofficial.com/articles/tag/${name}`,
           headers: {
             token: localStorage.getItem('token')
           }

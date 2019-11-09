@@ -183,7 +183,7 @@ export default {
       name: null,
       searchTagName: null,
       tran: null,
-      socket: io.connect('http://localhost:3000'),
+      socket: io.connect('http://wpserver.dreamcarofficial.com'),
       forEdit: null,
       forSibling: null
     }
@@ -269,7 +269,7 @@ export default {
       return new Promise ((resolve, reject) => {
         axios({
           method: 'delete',
-          url: `http://localhost:3000/articles/${id}`,
+          url: `http://wpserver.dreamcarofficial.com/articles/${id}`,
           headers: {
             token: localStorage.getItem('token')
           }

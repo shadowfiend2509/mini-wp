@@ -95,7 +95,7 @@ import io from 'socket.io-client'
 export default {
   data () {
     return {
-      baseUrl: 'http://localhost:3000',
+      baseUrl: 'http://wpserver.dreamcarofficial.com',
       page: '',
       isLogin: false,
       user: null,
@@ -103,7 +103,7 @@ export default {
       article: null,
       notification: 0,
 
-      socket: io.connect('http://localhost:3000'),
+      socket: io.connect('http://wpserver.dreamcarofficial.com'),
       pageDash: null,
 
       gotIdArticle: null,
@@ -121,7 +121,6 @@ export default {
   },
   methods: {
     findTag (name) {
-      console.log(`app ${name}`)
       this.gotTagArticle = name;
       this.page = 'mainPage'
     },
@@ -130,7 +129,16 @@ export default {
       this.gotIdArticle = id
     },
     changeAndUpdate (article) {
-      this.article.unshift(article);
+      console.log('ini dari app')
+      console.log(article)
+      this.articleLogin()
+        .then(() => {
+          this.$awn.success('test')
+        })
+        .catch(err => {
+          this.$awn.warning('warewaf')
+        })
+      console.log(this.article)
       this.page = 'mainPage'
     },
     isLoading(status) {

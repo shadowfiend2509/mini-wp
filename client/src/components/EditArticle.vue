@@ -94,7 +94,7 @@ export default {
       return new Promise ((resolve, reject) => {
         axios({
           method: 'put',
-          url: `http://localhost:3000/articles/${id}`,
+          url: `http://wpserver.dreamcarofficial.com/articles/${id}`,
           data: {tags, title, content},
           headers: {
             token: localStorage.getItem('token')
@@ -112,7 +112,6 @@ export default {
     }
   },
   created () {
-    console.log(this.article)
     this.updateTitle = this.article.title;
     this.updateContent = this.article.content;
     this.selected = this.article.tags;
