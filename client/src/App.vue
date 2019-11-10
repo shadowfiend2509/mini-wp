@@ -129,8 +129,6 @@ export default {
       this.gotIdArticle = id
     },
     changeAndUpdate (article) {
-      console.log('ini dari app')
-      console.log(article)
       this.articleLogin()
         .then(() => {
           this.$awn.success('test')
@@ -138,7 +136,6 @@ export default {
         .catch(err => {
           this.$awn.warning('warewaf')
         })
-      console.log(this.article)
       this.page = 'mainPage'
     },
     isLoading(status) {
@@ -153,24 +150,32 @@ export default {
     gotPageFromChild (name) {
       this.page = name
     },
-    statusLogin() {
+    statusLogin(token, user) {
+      localStorage.setItem('token', token)
+      this.user = null;
+      this.user = user;
+      this.articleLogin()
+        .then(() => {
+          this.$awn.success("fetching article users")
+        })
+        .catch(err => {
+          this.$awn.warning(err.response.data.msg)
+        })
       this.isLogin = true;
+      this.page = 'mainPage'
       setTimeout(() => {
-        this.profileLogin()
-          .then(data => {
-            return this.articleLogin()
+      this.articleLogin()
+        .then(() => {
+          this.getNotification()
+          this.$awn.info(`You have ${this.notification} Notification`)
+          this.page = 'mainPage'
+        })
+        .catch(err => {
+          swal.fire({
+            type: 'warning',
+            title: err.msg
           })
-          .then(() => {
-            this.getNotification()
-            this.$awn.info(`You have ${this.notification} Notification`)
-            this.page = 'mainPage'
-          })
-          .catch(err => {
-            swal.fire({
-              type: 'warning',
-              title: err.msg
-            })
-          })
+        })
       }, 1000);
     },
     profileLogin () {
@@ -232,7 +237,7 @@ export default {
         .then(data => {
           setTimeout(() => {
             this.getNotification()
-            this.$awn.info(`You have ${this.notification} Notification`)            
+            this.$awn.info(`You have ${this.notification} Notification`)
           }, 4000);
         })
         .catch(err => {

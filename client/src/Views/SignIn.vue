@@ -99,8 +99,9 @@ export default {
           }
         })
           .then(({data}) => {
-            this.$emit('success-signin')
-            localStorage.setItem('token', data.token)
+            console.log('data yang login')
+            console.log(data)
+            this.$emit('success-signin', data.token, data.user)
             this.inemail ='';
             this.inpassword = ''
             resolve()

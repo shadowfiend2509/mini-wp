@@ -3,7 +3,7 @@
                   
     <div class="section-head border">
       <ul>
-        <li>Public Site <a id='cicle'>{{articles.length}}</a></li>
+        <li>Followed Site <a id='cicle'>{{ count }}</a></li>
       </ul>
     </div>
 
@@ -18,13 +18,15 @@
       </div>
     </div>
 
-    <div class="section-head3 border" v-for='(article, i) in articles[0]' :key='i'>
-      <CardComponent 
-        :get-article='article'
-        @like-click='likeArticle'
-        @change-page='sendReadOneArticle'
-        @send-tag='sendTag'
-      />
+    <div class="section-head3 border" v-for='(articles1, i) in articles' :key='i'>
+      <div v-for='(article, i) in articles1' :key='i'>
+        <CardComponent 
+          :get-article='article'
+          @like-click='likeArticle'
+          @change-page='sendReadOneArticle'
+          @send-tag='sendTag'
+        />
+      </div>
     </div>
 
   </div>
@@ -38,7 +40,8 @@ export default {
   data () {
     return {
       gettingId: [],
-      articles: []
+      articles: [],
+      count: 0
     }
   },
   components: {
@@ -87,40 +90,42 @@ export default {
         })
     },
     getArticleFol () {
-      return new Promise ((resolve,reject) => {
-        for(let i=0; i<this.gettingId.length; i++ ){
-          this.shottingFol(this.gettingId[i])
-        }
-        resolve(this.articles)
-      })
+      for(let i=0; i<this.gettingId.length; i++ ){
+        this.$awn.asyncBlock(
+          this.shottingFol(this.gettingId[i]),
+          "success",
+          null,
+          "Loading"
+        )
+      }
     },
     shottingFol (id) {
-      this.articles = []
-      axios({
-        method: 'get',
-        url: `http://wpserver.dreamcarofficial.com/articles/folArt/${id}`,
-        headers: {
-          token: localStorage.getItem("token")
-        }
+      return new Promise ((resolve, reject) => {
+        axios({
+          method: 'get',
+          url: `http://wpserver.dreamcarofficial.com/articles/folArt/${id}`,
+          headers: {
+            token: localStorage.getItem("token")
+          }
+        })
+          .then(({data}) => {
+            data.forEach(el => {
+              this.count++
+            })
+            this.articles.push(data)
+            resolve(data)
+          })
+          .catch(err => {
+            reject(err)
+          })
       })
-        .then(({data}) => {
-          this.articles.push(data)
-        })
-        .catch(err => {
-          this.$awn.warning(err.response.data.msg)
-        })
     }
   },
   created () {
     this.getFollowingId()
     setTimeout(() => {
-      this.$awn.asyncBlock(
-        this.getArticleFol(),
-        'fetching article',
-        null,
-        'Loading'
-      )
-    }, 1000);
+        this.getArticleFol()
+    }, 3000);
   },
   watch: {
     articles: {
