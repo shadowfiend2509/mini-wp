@@ -10,7 +10,6 @@ module.exports = {
       }
     })
       .then(({data}) => {
-        console.log(data)
         res.status(200).json({author: data.quote.author, body: data.quote.body})
       })
       .catch(next)

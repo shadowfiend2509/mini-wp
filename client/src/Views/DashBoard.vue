@@ -294,8 +294,6 @@ export default {
   },
   created () {
     // this.fetchingData()
-    console.log('masuk dashboard')
-    console.log(this.getArticle)
     this.name = 'public'
     if(this.tagFromSibling){
       this.name = 'tags';

@@ -110,14 +110,12 @@ module.exports = {
 
         let temp = [];
         articles.forEach((el, i) => {
-          console.log(el.tags)
           for(let i=0; i<el.tags.length; i++) {
             if(el.tags[i] == tag && !el.Author.status) {
               temp.push(el)
             }
           }
         })
-        console.log(temp)
         res.status(200).json({article: temp})
       })
       .catch(next)

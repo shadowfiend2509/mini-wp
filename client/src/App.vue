@@ -129,13 +129,6 @@ export default {
       this.gotIdArticle = id
     },
     changeAndUpdate () {
-      // this.articleLogin()
-      //   .then(() => {
-      //     this.$awn.success('test')
-      //   })
-      //   .catch(err => {
-      //     this.$awn.warning('warewaf')
-      //   })
       this.page = 'mainPage'
     },
     isLoading(status) {

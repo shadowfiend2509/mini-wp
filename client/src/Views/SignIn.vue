@@ -61,7 +61,7 @@ export default {
     sendPage(name) {
       this.$emit('change-page', name)
     },
-    onSingInSuccess(googleUser){ 
+    onSingInSuccess(googleUser){
       const id_token = googleUser.getAuthResponse().id_token;
       axios({
         method: 'post',
@@ -99,8 +99,6 @@ export default {
           }
         })
           .then(({data}) => {
-            console.log('data yang login')
-            console.log(data)
             this.$emit('success-signin', data.token, data.user)
             this.inemail ='';
             this.inpassword = ''
