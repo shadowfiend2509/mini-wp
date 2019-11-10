@@ -121,7 +121,4 @@ export default {
 </script>
 
 <style>
-#profille{
-
-}
 </style>

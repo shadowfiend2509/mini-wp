@@ -128,14 +128,14 @@ export default {
       this.page = 'readPage'
       this.gotIdArticle = id
     },
-    changeAndUpdate (article) {
-      this.articleLogin()
-        .then(() => {
-          this.$awn.success('test')
-        })
-        .catch(err => {
-          this.$awn.warning('warewaf')
-        })
+    changeAndUpdate () {
+      // this.articleLogin()
+      //   .then(() => {
+      //     this.$awn.success('test')
+      //   })
+      //   .catch(err => {
+      //     this.$awn.warning('warewaf')
+      //   })
       this.page = 'mainPage'
     },
     isLoading(status) {
