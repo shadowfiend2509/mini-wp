@@ -108,7 +108,7 @@ module.exports = {
             username: user.username
           }
           const signinToken = signToken(payload)
-          res.status(200).json({ token: signinToken })
+          res.status(200).json({ token: signinToken, user })
         } else {
           throw {msg: 'wrong'}
         }

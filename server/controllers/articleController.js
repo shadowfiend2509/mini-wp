@@ -26,7 +26,7 @@ module.exports = {
   },
   getAuthorArticle (req, res, next) {
     const Author = req.loggedUser.id;
-    Article.find({ Author }).sort([['createdAt', 'descending']])
+    Article.find({ Author }).populate('Author').sort([['createdAt', 'descending']])
       .then(articles => {
         res.status(200).json(articles);
       })
