@@ -40,8 +40,7 @@ module.exports = (err, req, res, next) => {
     res.status(404).json({msg: 'Email not registered!'})
   } else if(err.code == 11000 ) {
     res.status(403).json({msg: 'The Email allready used!'})
-  }
-  else {
+  } else {
     res.status(500).json({msg: 'Internal Server Error'});
   }
 }

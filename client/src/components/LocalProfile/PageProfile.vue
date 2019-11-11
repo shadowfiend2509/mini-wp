@@ -113,7 +113,9 @@ export default {
           this.getProfile.status = !this.getProfile.status
           this.getStatus()
         })
-        .catch(console.log)
+        .catch(err => {
+          this.$awn.warning(err.response.data.msg)
+        })
     },
     getStatus() {
       if(this.getProfile.status){

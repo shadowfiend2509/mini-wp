@@ -157,7 +157,8 @@ export default {
       })
         .then(({data}) => {
           this.socket.emit('createArticle', data.article._id)
-          this.sendChange(data.article)
+          data = null;
+          this.sendChange()
           resolve()
         })
         .catch(err => {

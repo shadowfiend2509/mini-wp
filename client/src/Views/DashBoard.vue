@@ -293,7 +293,7 @@ export default {
     }
   },
   created () {
-    this.fetchingData()
+    // this.fetchingData()
     this.name = 'public'
     if(this.tagFromSibling){
       this.name = 'tags';

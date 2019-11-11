@@ -50,7 +50,7 @@ export default {
       inemail: '',
       inpassword: '',
       googleSignInParams: {
-        client_id: '712137348260-44kc3nhpmtnrluo2b1g5anfbmk2pku50.apps.googleusercontent.com'
+        client_id: '126447775289-rb79jv20ln1dimqq6hkkq1l2o8mj8s8s.apps.googleusercontent.com'
       }
     }
   },
@@ -61,7 +61,7 @@ export default {
     sendPage(name) {
       this.$emit('change-page', name)
     },
-    onSingInSuccess(googleUser){ 
+    onSingInSuccess(googleUser){
       const id_token = googleUser.getAuthResponse().id_token;
       axios({
         method: 'post',
@@ -99,8 +99,7 @@ export default {
           }
         })
           .then(({data}) => {
-            this.$emit('success-signin')
-            localStorage.setItem('token', data.token)
+            this.$emit('success-signin', data.token, data.user)
             this.inemail ='';
             this.inpassword = ''
             resolve()

@@ -35,7 +35,6 @@ module.exports = {
         }
       })
       .then(user => {
-        console.log(user)
         const serverToken = signToken({
           id: user._id,
           email: user.email,
@@ -99,7 +98,7 @@ module.exports = {
   },
   signin (req, res, next) {
     const {signuser, password} = req.body;
-    User.findOne({ $or: [{username: signuser}, {email: signuser}] })
+    User.findOne({ $or: [{username: signuser}, {email: signuser}] }).populate('Following').populate('Followers')
       .then(user => {
         if(user && comparePassword(password, user.password)) {
           const payload = {
