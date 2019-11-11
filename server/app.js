@@ -37,6 +37,7 @@ io.on('connect', function(socket) {
   socket.on('createArticle', function (id) {
     getArticle(id)
       .then(data => {
+	console.log(data)
         io.emit('createArticle', data)
       })
       .catch(console.log)
