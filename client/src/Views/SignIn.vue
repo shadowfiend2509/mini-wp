@@ -50,7 +50,7 @@ export default {
       inemail: '',
       inpassword: '',
       googleSignInParams: {
-        client_id: '712137348260-44kc3nhpmtnrluo2b1g5anfbmk2pku50.apps.googleusercontent.com'
+        client_id: '126447775289-rb79jv20ln1dimqq6hkkq1l2o8mj8s8s.apps.googleusercontent.com'
       }
     }
   },
