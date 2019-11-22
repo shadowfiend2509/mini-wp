@@ -80,7 +80,7 @@ export default {
       formData.append('image', this.file)
       axios({
         method: 'patch',
-        url: `http://wpserver.dreamcarofficial.com/users/upload`,
+        url: `http://localhost:3000/users/upload`,
         data: formData,
         headers: {
           token: localStorage.getItem('token')
@@ -104,7 +104,7 @@ export default {
     changeStatus () {
       axios({
         method: 'patch',
-        url : `http://wpserver.dreamcarofficial.com/users/change/status`,
+        url : `http://localhost:3000/users/change/status`,
         headers: {
           token: localStorage.getItem('token')
         }

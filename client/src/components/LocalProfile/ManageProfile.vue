@@ -41,7 +41,7 @@ export default {
     unFollow (id) {
       axios({
         method: 'patch',
-        url: `http://wpserver.dreamcarofficial.com/users/status/public/${id}`,
+        url: `http://localhost:3000/users/status/public/${id}`,
         headers: {
           token: localStorage.getItem('token')
         }
@@ -57,7 +57,7 @@ export default {
     fetchUser () {
       axios({
         method: 'get',
-        url: `http://wpserver.dreamcarofficial.com/users/find/login`,
+        url: `http://localhost:3000/users/find/login`,
         headers: {
           token: localStorage.getItem('token')
         }

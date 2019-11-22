@@ -39,7 +39,7 @@ import swal from 'sweetalert2'
 export default {
   data () {
     return {
-      baseUrl: `http://wpserver.dreamcarofficial.com`,
+      baseUrl: `http://localhost:3000`,
       upusername: '',
       upemail: '',
       uppassword: ''

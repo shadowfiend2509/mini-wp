@@ -58,7 +58,7 @@ export default {
       return new Promise ((resolve, reject) => {
         axios({
           method: 'get',
-          url: 'http://wpserver.dreamcarofficial.com/quote'
+          url: 'http://localhost:3000/quote'
         })
           .then(({data}) => {
             this.quote = data
