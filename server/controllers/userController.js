@@ -11,11 +11,14 @@ module.exports = {
     let username = null;
     let email = null;
     const client = new OAuth2Client(process.env.GOOGLE_CLIENTID)
+    console.log(client)
     client.verifyIdToken({
       idToken: req.body.id_token,
       audience: process.env.GOOGLE_CLIENTID
     })
       .then(ticket => {
+        console.log('diatas client nya di bawah ticketnya')
+        console.log(ticket)
         const payload = ticket.getPayload()
         username = payload.name;
         email = payload.email

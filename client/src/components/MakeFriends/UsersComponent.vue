@@ -78,7 +78,7 @@ export default {
       this.statusFol.isPrivate.iconPrivate = ''
       axios({
         method: 'patch',
-        url: `http://wpserver.dreamcarofficial.com/users/status/private/${id}`,
+        url: `http://localhost:3000/users/status/private/${id}`,
         headers: {
           token: localStorage.getItem('token')
         }
@@ -100,7 +100,7 @@ export default {
     actionFolPublic (id) {
       axios({
         method: 'patch',
-        url: `http://wpserver.dreamcarofficial.com/users/status/public/${id}`,
+        url: `http://localhost:3000/users/status/public/${id}`,
         headers: {
           token: localStorage.getItem('token')
         }
@@ -151,7 +151,7 @@ export default {
       const id = this.getUser._id;
       axios({
         method: 'get',
-        url: `http://wpserver.dreamcarofficial.com/users/status/${id}`,
+        url: `http://localhost:3000/users/status/${id}`,
         headers: {
           token: localStorage.getItem('token')
         }

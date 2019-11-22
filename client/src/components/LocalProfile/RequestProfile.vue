@@ -30,7 +30,7 @@ export default {
     acceptRequest (id) {
       axios({
         method: 'patch',
-        url: `http://wpserver.dreamcarofficial.com/users/status/accept/${id}`,
+        url: `http://localhost:3000/users/status/accept/${id}`,
         headers: {
           token: localStorage.getItem('token')
         }
@@ -46,7 +46,7 @@ export default {
     declineRequest (id) {
       axios({
         method: 'patch',
-        url: `http://wpserver.dreamcarofficial.com/users/status/decline/${id}`,
+        url: `http://localhost:3000/users/status/decline/${id}`,
         headers: {
           token: localStorage.getItem('token')
         }

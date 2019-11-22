@@ -40,7 +40,7 @@ export default {
       return new Promise ((resolve, reject) => {
         axios({
           method: 'get',
-          url: 'http://wpserver.dreamcarofficial.com/users',
+          url: 'http://localhost:3000/users',
           headers: {
             token: localStorage.getItem('token')
           }
@@ -57,7 +57,7 @@ export default {
     fetchUserLogin() {
       axios({
         method: 'get',
-        url: 'http://wpserver.dreamcarofficial.com/users/find/login',
+        url: 'http://localhost:3000/users/find/login',
         headers: {
           token: localStorage.getItem('token')
         }

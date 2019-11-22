@@ -40,7 +40,7 @@ export default {
   data () {
     return {
       articles: '',
-      socket: io.connect('http://wpserver.dreamcarofficial.com')
+      socket: io.connect('http://localhost:3000')
     }
   },
   components: {
@@ -53,7 +53,7 @@ export default {
     likeArticle (id) {
       axios({
         method: 'patch',
-        url: `http://wpserver.dreamcarofficial.com/articles/${ id }`,
+        url: `http://localhost:3000/articles/${ id }`,
         headers: {
           token: localStorage.getItem('token')
         }
@@ -75,7 +75,7 @@ export default {
       return new Promise((resolve, reject) => {
         axios({
           method: 'get',
-          url: 'http://wpserver.dreamcarofficial.com/articles/public',
+          url: 'http://localhost:3000/articles/public',
           headers: {
             token: localStorage.getItem('token')
           }
