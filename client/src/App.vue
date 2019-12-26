@@ -95,7 +95,7 @@ import io from 'socket.io-client'
 export default {
   data () {
     return {
-      baseUrl: 'http://localhost:3000',
+      baseUrl: 'http://wpserver.dreamcarofficial.com',
       page: '',
       isLogin: false,
       user: null,
@@ -103,7 +103,7 @@ export default {
       article: null,
       notification: 0,
 
-      socket: io.connect('http://localhost:3000'),
+      socket: io.connect('http://wpserver.dreamcarofficial.com'),
       pageDash: null,
 
       gotIdArticle: null,

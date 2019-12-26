@@ -46,11 +46,11 @@ import swal from 'sweetalert2'
 export default {
   data () {
     return {
-      baseUrl: `http://localhost:3000`,
+      baseUrl: `http://wpserver.dreamcarofficial.com`,
       inemail: '',
       inpassword: '',
       googleSignInParams: {
-        client_id: '1038190396964-5tfbgsrb2idkfv2nu84lupv3ni6albhu.apps.googleusercontent.com'
+        client_id: '126447775289-rb79jv20ln1dimqq6hkkq1l2o8mj8s8s.apps.googleusercontent.com'
       }
     }
   },
@@ -61,18 +61,15 @@ export default {
     sendPage(name) {
       this.$emit('change-page', name)
     },
-    onSingInSuccess(googleUser){
+    onSignInSuccess(googleUser){
       const id_token = googleUser.getAuthResponse().id_token;
-      console.log('ini signin google')
-      console.log(id_token)
       axios({
         method: 'post',
         url: `${this.baseUrl}/users/signinG`,
         data: { id_token }
       })
         .then(({data}) => {
-          localStorage.setItem('token', data.token)
-          this.$emit('success-signin')
+          this.$emit('success-signin', data.token, data.user)
         })
         .catch(err => {
           this.$awn.warning(err.response.data.msg)

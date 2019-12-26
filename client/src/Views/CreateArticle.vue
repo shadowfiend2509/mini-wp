@@ -110,7 +110,7 @@ export default {
       tinyOptions: {
         'height': 600,
       },
-      socket: io.connect('http://localhost:3000')
+      socket: io.connect('http://wpserver.dreamcarofficial.com')
     }
   },
   components:{
@@ -148,7 +148,7 @@ export default {
       
       axios({
         method: 'post',
-        url: 'http://localhost:3000/articles/upload',
+        url: 'http://wpserver.dreamcarofficial.com/articles/upload',
         data: formData,
         headers: {
           token: localStorage.getItem('token')

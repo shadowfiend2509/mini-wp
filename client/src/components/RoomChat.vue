@@ -36,14 +36,14 @@ export default {
       messages: null,
       userLogin: null,
       newMsg: null,
-      socket: io.connect(`http://localhost:3000`)
+      socket: io.connect(`http://wpserver.dreamcarofficial.com`)
     }
   },
   methods: {
     sendMessage () {
       axios({
         method: 'post',
-        url: 'http://localhost:3000/msg',
+        url: 'http://wpserver.dreamcarofficial.com/msg',
         headers: {
           token: localStorage.getItem('token')
         },
@@ -63,7 +63,7 @@ export default {
     fetchMessage () {
       axios({
         method: 'get',
-        url: 'http://localhost:3000/msg',
+        url: 'http://wpserver.dreamcarofficial.com/msg',
         headers: {
           token: localStorage.getItem('token')
         }
@@ -79,7 +79,7 @@ export default {
     fetchUser () {
       axios({
         method: 'get',
-        url: 'http://localhost:3000/users/find/login',
+        url: 'http://wpserver.dreamcarofficial.com/users/find/login',
         headers: {
           token: localStorage.getItem('token')
         }

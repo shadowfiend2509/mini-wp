@@ -5,6 +5,7 @@ const images = require('../helpers/images')
 
 Route.post('/signup', userCont.signup); //* -
 Route.post('/signin', userCont.signin); //* -
+Route.post('/signinG', userCont.signinG)
 
 Route.post('/confirm/verify', userCont.resetPasswordVerify); //* -
 Route.patch('/confirm', userCont.confirmVerify); //* -

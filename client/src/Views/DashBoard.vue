@@ -44,7 +44,7 @@
                   
                   <div class="section-head border">
                     <ul>
-                      <li>Published <a id='cicle'>{{ getArticle.length }}</a></li>
+                      <li>My Site <a id='cicle'>{{ getArticle.length }}</a></li>
                     </ul>
                   </div>
 
@@ -183,7 +183,7 @@ export default {
       name: null,
       searchTagName: null,
       tran: null,
-      socket: io.connect('http://localhost:3000'),
+      socket: io.connect('http://wpserver.dreamcarofficial.com'),
       forEdit: null,
       forSibling: null
     }
@@ -223,7 +223,8 @@ export default {
       this.name = 'tags'
     },
     changeResponse (name) {
-      this.name = name
+      this.name = name;
+
     },
     gotoPage (name) {
       this.$emit('change-page', name)
@@ -269,7 +270,7 @@ export default {
       return new Promise ((resolve, reject) => {
         axios({
           method: 'delete',
-          url: `http://localhost:3000/articles/${id}`,
+          url: `http://wpserver.dreamcarofficial.com/articles/${id}`,
           headers: {
             token: localStorage.getItem('token')
           }

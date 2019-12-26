@@ -94,7 +94,7 @@ export default {
       return new Promise ((resolve, reject) => {
         axios({
           method: 'put',
-          url: `http://localhost:3000/articles/${id}`,
+          url: `http://wpserver.dreamcarofficial.com/articles/${id}`,
           data: {tags, title, content},
           headers: {
             token: localStorage.getItem('token')

@@ -51,7 +51,7 @@ export default {
     likeArticle (id) {
       axios({
         method: 'patch',
-        url: `http://localhost:3000/articles/${ id }`,
+        url: `http://wpserver.dreamcarofficial.com/articles/${ id }`,
         headers: {
           token: localStorage.getItem('token')
         }
@@ -75,7 +75,7 @@ export default {
     getFollowingId () {
       axios({
         method: 'get',
-        url: 'http://localhost:3000/users/getId/fol',
+        url: 'http://wpserver.dreamcarofficial.com/users/getId/fol',
         headers: {
           token: localStorage.getItem('token')
         }
@@ -103,7 +103,7 @@ export default {
       return new Promise ((resolve, reject) => {
         axios({
           method: 'get',
-          url: `http://localhost:3000/articles/folArt/${id}`,
+          url: `http://wpserver.dreamcarofficial.com/articles/folArt/${id}`,
           headers: {
             token: localStorage.getItem("token")
           }

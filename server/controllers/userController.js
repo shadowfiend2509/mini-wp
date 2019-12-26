@@ -1,24 +1,21 @@
-const User = require('../models/user');
-const { comparePassword, hashPassword } = require('../helpers/hash');
-const { signToken } = require('../helpers/jwt');
-const { createVerify, checkVerify } = require('../helpers/logicVerify');
-const { sendMail } = require('../helpers/sendMail');
-const mongoose = require('mongoose');
-const { OAuth2Client } = require('google-auth-library');
+const User = require('../models/user'),
+  { comparePassword, hashPassword } = require('../helpers/hash'),
+  { signToken } = require('../helpers/jwt'),
+  { createVerify, checkVerify } = require('../helpers/logicVerify'),
+  { sendMail } = require('../helpers/sendMail'),
+  mongoose = require('mongoose'),
+  { OAuth2Client } = require('google-auth-library')
 
 module.exports = {
   signinG (req, res, next) {
     let username = null;
     let email = null;
     const client = new OAuth2Client(process.env.GOOGLE_CLIENTID)
-    console.log(client)
     client.verifyIdToken({
       idToken: req.body.id_token,
       audience: process.env.GOOGLE_CLIENTID
     })
       .then(ticket => {
-        console.log('diatas client nya di bawah ticketnya')
-        console.log(ticket)
         const payload = ticket.getPayload()
         username = payload.name;
         email = payload.email
@@ -31,11 +28,8 @@ module.exports = {
           let rand = Math.floor(Math.random() * alfa.length)
           temp += alfa[rand]
         }
-        if(user) {
-          return user
-        } else {
-          return User.create({ username, password: temp, email })
-        }
+        if(user) return user
+        else return User.create({ username, password: temp, email })
       })
       .then(user => {
         const serverToken = signToken({
@@ -43,7 +37,7 @@ module.exports = {
           email: user.email,
           username: user.username
         })
-        res.status(200).json({token: serverToken})
+        res.status(200).json({token: serverToken, user})
       })
       .catch(next)
   },

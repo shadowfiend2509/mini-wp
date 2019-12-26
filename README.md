@@ -12,7 +12,7 @@ Dc-MiniWp build with:
 6. vue-awesome-notification
 ```
 
-### Base URL: 'http://localhost:3000'
+### Base URL: 'http://wpserver.dreamcarofficial.com'
 
 ## <span style='color:red'>Error Response</span> :
 
